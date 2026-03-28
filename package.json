@@ -1,0 +1,17 @@
+{
+  "name": "create-feast-site",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "create-feast-site": "./index.js"
+  },
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "enquirer": "^2.4.1",
+    "execa": "^9.6.1",
+    "fs-extra": "^11.3.4",
+    "ora": "^9.3.0"
+  }
+}
