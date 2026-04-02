@@ -1,9 +1,9 @@
 // lib/getBusiness.ts
 import config from "@/feast.config";
-import { Business } from "@/types/business";
 import { supabase } from "./supabase";
+import { FeastConfig } from "@/types/feast";
 
-export async function getBusiness(): Promise<Business> {
+export async function getBusiness(): Promise<FeastConfig> {
   const { data, error } = await supabase
     .from("businesses")
     .select("*")
@@ -11,5 +11,5 @@ export async function getBusiness(): Promise<Business> {
     .single();
 
   if (error) throw error;
-  return data as Business;
+  return data as FeastConfig;
 }

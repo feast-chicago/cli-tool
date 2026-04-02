@@ -28,7 +28,6 @@ const config: FeastConfig = {
     hasMenu: true,
     hasOnlineOrders: true,
     hasTestimonials: true,
-    hasGoogleMap: true,
   },
   integrations: {
     analyticsId: null,
