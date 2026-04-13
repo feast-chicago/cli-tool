@@ -1,5 +1,7 @@
 import pkg from "enquirer";
 import { AnswersSchema } from "../../schema";
+import ora from "ora";
+import { fetchGoogleFonts } from "../fonts";
 
 export async function gatherAnswers() {
   const { prompt } = pkg;
@@ -126,6 +128,27 @@ export async function gatherAnswers() {
         },
       ]);
 
+  const fontSpinner = ora("Fetching Google Web Fonts...").start();
+  let fontMap: Map<string, string>;
+  try {
+    fontMap = await fetchGoogleFonts();
+    fontSpinner.succeed("✅ Google Web Fonts successfully loaded");
+  } catch {
+    fontSpinner.warn(
+      "Could not fetch Google Web Fonts. Using defaults instead...",
+    );
+    fontMap = new Map([
+      ["Inter", "Inter"],
+      ["Roboto", "Roboto"],
+      ["Playfair Display", "Playfair_Display"],
+      ["Lato", "Lato"],
+      ["Merriweather", "Merriweather"],
+      ["Montserrat", "Montserrat"],
+      ["Source Sans 3", "Source_Sans_3"],
+      ["DM Sans", "DM_Sans"],
+    ]);
+  }
+
   const themeAnswers = await prompt([
     {
       type: "select",
@@ -169,23 +192,18 @@ export async function gatherAnswers() {
       initial: "#f5f5f5",
     },
     {
-      type: "select",
+      type: "autocomplete",
       name: "primary_font",
-      message: "Primary brand font (CSS font-family)?",
-      // TODO: Connect to Google Fonts API to provide a better selection experience.
-      // TODO: Add secondary font choice.
-      choices: [
-        "Inter, sans-serif",
-        "Arial, sans-serif",
-        "Helvetica, sans-serif",
-        "Times New Roman, serif",
-        "Georgia, serif",
-        "Courier New, monospace",
-        "Verdana, sans-serif",
-        "Tahoma, sans-serif",
-        "Trebuchet MS, sans-serif",
-        "Impact, sans-serif",
-      ],
+      message: "Primary brand font?",
+      choices: [...fontMap.keys()],
+      maxChoices: 10,
+    },
+    {
+      type: "autocomplete",
+      name: "secondary_font",
+      message: "Secondary brand font?",
+      choices: [...fontMap.keys()],
+      maxChoices: 10,
     },
     {
       type: "select",
@@ -216,5 +234,5 @@ export async function gatherAnswers() {
     ...adminAnswers,
   });
 
-  return answers;
+  return { answers, fontMap };
 }

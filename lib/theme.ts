@@ -64,11 +64,7 @@ function getRadius(radius: Theme["radius"]): string {
   }
 }
 
-export function createTheme(theme: Theme): {
-  light: ThemeVars;
-  dark: ThemeVars;
-  font: string;
-} {
+export function createTheme(theme: Theme) {
   const primary = toOklchValues(theme.primary_brand_color);
   const primaryFg = getForeground(theme.primary_brand_color);
 
@@ -187,7 +183,12 @@ export function createTheme(theme: Theme): {
     "--sidebar-ring": `oklch(${primary})`,
   };
 
-  return { light, dark, font: theme.primary_font };
+  return {
+    light,
+    dark,
+    primaryFont: theme.primary_font,
+    secondaryFont: theme.secondary_font,
+  };
 }
 
 export function generateCssVariables(
@@ -198,8 +199,9 @@ export function generateCssVariables(
       .map(([k, v]) => `  ${k}: ${v};`)
       .join("\n");
 
-  const lightVars = `:root {\n${toVars(createdTheme.light)}\n  --font-sans: ${createdTheme.font};\n}`;
-  const darkVars = `.dark {\n${toVars(createdTheme.dark)}\n  --font-sans: ${createdTheme.font};\n}`;
+  const fontCss = `\n  --font-primary: "${createdTheme.primaryFont}";\n  --font-secondary: "${createdTheme.secondaryFont}";\n}`;
+  const lightVars = `:root {\n${toVars(createdTheme.light)}${fontCss}`;
+  const darkVars = `.dark {\n${toVars(createdTheme.dark)}${fontCss}`;
 
   // always write both blocks — the .dark class is toggled by is_dark_mode_enabled
   // in the root layout, not by whether the block exists in CSS

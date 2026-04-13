@@ -18,14 +18,14 @@ export const AnswersSchema = z.object({
   location_type: z.enum(["brick-and-mortar", "mobile", "hybrid", "multi-unit"]),
   // Business address
   business_address_line_1: z.string().min(1),
-  business_address_line_2: z.string().nullable(),
+  business_address_line_2: z.string().min(1).nullable(),
   business_address_city: z.string().min(1),
   business_address_state: z.string().min(1),
   business_address_zip: z.string().min(1),
   business_address_country: z.string().min(1),
   // Billing address
   billing_address_line_1: z.string().min(1),
-  billing_address_line_2: z.string().nullable(),
+  billing_address_line_2: z.string().min(1).nullable(),
   billing_address_city: z.string().min(1),
   billing_address_state: z.string().min(1),
   billing_address_zip: z.string().min(1),
@@ -47,13 +47,16 @@ export const AnswersSchema = z.object({
   secondary_brand_color: z
     .string()
     .regex(/^#[0-9A-Fa-f]{6}$/)
+    .min(4)
     .nullable(),
   accent_brand_color: z
     .string()
     .regex(/^#[0-9A-Fa-f]{6}$/)
+    .min(4)
     .nullable(),
   background_color: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
   primary_font: z.string().min(1),
+  secondary_font: z.string().min(1).nullable(),
   radius: z.enum(["Default", "None", "Small", "Medium", "Large"]),
   is_dark_mode_enabled: z.boolean(),
   // Admin identity — needed in Clerk and Supabase(?)
@@ -100,6 +103,7 @@ export const SupabaseBusinessSchema = z.object({
   accent_brand_color: AnswersSchema.shape.accent_brand_color,
   background_color: AnswersSchema.shape.background_color,
   primary_font: AnswersSchema.shape.primary_font,
+  secondary_font: AnswersSchema.shape.secondary_font,
   radius: AnswersSchema.shape.radius,
   is_dark_mode_enabled: AnswersSchema.shape.is_dark_mode_enabled,
   // admin
@@ -147,19 +151,23 @@ export const SupabaseMenuItemSchema = z.object({
 
 export const ConfigSchema = z.object({
   id: z.string(),
-  theme: z.object({
-    platform_theme: AnswersSchema.shape.platform_theme,
-    primary_brand_color: AnswersSchema.shape.primary_brand_color,
-    secondary_brand_color: AnswersSchema.shape.secondary_brand_color,
-    accent_brand_color: AnswersSchema.shape.accent_brand_color,
-    background_color: AnswersSchema.shape.background_color,
-    primary_font: AnswersSchema.shape.primary_font,
-    radius: AnswersSchema.shape.radius,
-    is_dark_mode_enabled: AnswersSchema.shape.is_dark_mode_enabled,
-  }),
+  name: z.string(),
+  description: z.string().nullable(),
+});
+
+export const ThemeSchema = z.object({
+  platform_theme: AnswersSchema.shape.platform_theme,
+  primary_brand_color: AnswersSchema.shape.primary_brand_color,
+  secondary_brand_color: AnswersSchema.shape.secondary_brand_color,
+  accent_brand_color: AnswersSchema.shape.accent_brand_color,
+  background_color: AnswersSchema.shape.background_color,
+  primary_font: AnswersSchema.shape.primary_font,
+  secondary_font: AnswersSchema.shape.secondary_font,
+  radius: AnswersSchema.shape.radius,
+  is_dark_mode_enabled: AnswersSchema.shape.is_dark_mode_enabled,
 });
 
 export type FeastConfig = z.infer<typeof ConfigSchema>;
 export type Answers = z.infer<typeof AnswersSchema>;
 export type SupabaseBusiness = z.infer<typeof SupabaseBusinessSchema>;
-export type Theme = z.infer<typeof ConfigSchema.shape.theme>;
+export type Theme = z.infer<typeof ThemeSchema>;

@@ -4,6 +4,8 @@ import { Answers, FeastConfig } from "../../schema";
 import { join } from "path";
 import fs from "fs-extra";
 import { createTheme, generateCssVariables } from "../theme";
+import { writeFonts } from "../fonts";
+import { gatherAnswers } from "./prompts";
 
 export async function createRepository(
   orgId: string,
@@ -11,7 +13,7 @@ export async function createRepository(
   answers: Answers,
 ) {
   // Copy the template to a new directory named after the business.
-  const templatePath = join(process.cwd(), "template");
+  const templatePath = join(process.cwd(), "../template");
   const rootPath = join(process.cwd(), `../clients/${slug}-site`);
 
   const copySpinner = ora(
@@ -26,14 +28,28 @@ export async function createRepository(
   ).start();
   const configContent = `module.exports = ${JSON.stringify(buildConfig(answers, orgId), null, 2)}\n`;
   await fs.writeFile(join(rootPath, "feast.config.ts"), configContent);
-  configSpinner.succeed("✅ Custom feast.config.ts successfully created");
+  configSpinner.succeed("✅ feast.config.ts successfully created");
 
   // Copy the schema file to the new directory
   const schemaSpinner = ora(
     `Creating a schema file for "${answers.name}"...`,
   ).start();
   await fs.copy(join(process.cwd(), "schema.ts"), join(rootPath, "schema.ts"));
-  schemaSpinner.succeed("✅ Updated schema.ts successfully created");
+  schemaSpinner.succeed("✅ schema.ts successfully created");
+
+  // Copy the schema file to the new directory
+  const fontSpinner = ora(
+    `Creating a fonts file for "${answers.name}"...`,
+  ).start();
+
+  const { fontMap } = await gatherAnswers();
+  await writeFonts(
+    rootPath,
+    answers.primary_font,
+    answers.secondary_font,
+    fontMap,
+  );
+  fontSpinner.succeed("✅ fonts.ts successfully created");
 
   // Generate CSS variables from the user's preferences and write them to globals.css.
   const themeSpinner = ora(
@@ -46,6 +62,7 @@ export async function createRepository(
     accent_brand_color: answers.accent_brand_color,
     background_color: answers.background_color,
     primary_font: answers.primary_font,
+    secondary_font: answers.secondary_font,
     radius: answers.radius,
     is_dark_mode_enabled: answers.is_dark_mode_enabled,
   });
@@ -64,7 +81,7 @@ export async function createRepository(
 
   // Write the updated CSS back to the file.
   await fs.writeFile(cssPath, css);
-  themeSpinner.succeed("✅ Custom globals.css successfully created");
+  themeSpinner.succeed("✅ globals.css successfully created");
 
   // Install dependencies in the new directory.
   const installSpinner = ora("Installing dependencies...").start();
@@ -80,27 +97,6 @@ export async function createRepository(
 }
 
 function buildConfig(answers: Answers, id: string): FeastConfig {
-  const {
-    platform_theme,
-    primary_brand_color,
-    secondary_brand_color,
-    accent_brand_color,
-    background_color,
-    primary_font,
-    radius,
-    is_dark_mode_enabled,
-  } = answers;
-  return {
-    id,
-    theme: {
-      platform_theme,
-      primary_brand_color,
-      secondary_brand_color,
-      accent_brand_color,
-      background_color,
-      primary_font,
-      radius,
-      is_dark_mode_enabled,
-    },
-  };
+  const { name, description } = answers;
+  return { id, name, description };
 }

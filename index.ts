@@ -16,7 +16,7 @@ config({ path: join(__dirname, ".env.local") });
 console.log(chalk.bold.hex("#F5853F")("\nFEAST Website Generator\n"));
 
 // 1. Gather answers from the user via prompts.
-const answers = await gatherAnswers();
+const { answers } = await gatherAnswers();
 
 // 2. Provision Clerk org and user.
 const { userEmail, password, orgId, slug } = await provisionClient(answers);
@@ -31,7 +31,9 @@ const { rootPath } = await createRepository(orgId, slug, answers);
 
 // Output next steps for the user.
 console.log(chalk.green(`\n  Done! Your project is ready at ${rootPath}`));
-console.log(chalk.yellow(`  Temporary password for ${userEmail}:\n  ${password}`));
+console.log(
+  chalk.yellow(`  Temporary password for ${userEmail}:\n  ${password}`),
+);
 console.log(
   chalk.black(
     `  Use the following commands to get started:\n  cd ${rootPath} && npm run dev\n`,

@@ -5,7 +5,7 @@ npx create-next-app@latest TEMPLATE_NAME --yes
 
 # create-feast-site
 
-This project is a CLI tool for creating FEAST sites.
+This project is a CLI tool for creating FEAST apps.
 
 ## Installation
 
