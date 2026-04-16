@@ -16,6 +16,15 @@ const AdminSchema = z.object({
   email: z.email(),
 });
 
+const SettingsSchema = z.object({
+  is_menu_page_enabled: z.boolean(),
+  is_online_ordering_enabled: z.boolean(),
+  is_pos_enabled: z.boolean(),
+  is_reservations_enabled: z.boolean(),
+  is_rewards_enabled: z.boolean(),
+  is_shop_page_enabled: z.boolean(),
+});
+
 const ThemeSchema = z.object({
   platform_theme: z.enum([
     "basic",
@@ -65,6 +74,7 @@ export const AnswersSchema = z.object({
   billing_address: AddressSchema,
   theme: ThemeSchema,
   admin: AdminSchema,
+  settings: SettingsSchema,
 });
 
 export const ClerkProvisionSchema = z.object({
@@ -75,20 +85,11 @@ export const ClerkProvisionSchema = z.object({
   businesses: z.array(z.string()).min(1),
 });
 
-export const SupabaseBusinessSchema = z.object({
+export const SupabaseBusinessSchema = AnswersSchema.extend({
   // info
   id: z.string().min(1),
-  name: AnswersSchema.shape.name,
-  tagline: AnswersSchema.shape.tagline,
-  description: AnswersSchema.shape.description,
-  phone: AnswersSchema.shape.phone,
-  email: AnswersSchema.shape.email,
-  category: AnswersSchema.shape.category,
-  location_type: AnswersSchema.shape.location_type,
-  business_address: AddressSchema,
-  billing_address: AddressSchema,
-  theme: ThemeSchema,
-  admin: AdminSchema,
+  created_at: z.date(),
+  updated_at: z.date(),
   // hours: z.object({
   //   mon: z.array(z.array(z.int())).nullable(),
   //   tue: z.array(z.array(z.int())).nullable(),
@@ -113,8 +114,6 @@ export const SupabaseBusinessSchema = z.object({
   // xUsername: z.string().nullable(),
   // yelpUsername: z.string().nullable(),
   // TODO: Add more fields, including but not limited to Stripe, Apple Maps, Google, etc.
-  created_at: z.date(),
-  updated_at: z.date(),
 });
 
 export const SupabaseMenuItemSchema = z.object({
@@ -135,5 +134,6 @@ export const ConfigSchema = z.object({
 
 export type FeastConfig = z.infer<typeof ConfigSchema>;
 export type Answers = z.infer<typeof AnswersSchema>;
+export type Settings = z.infer<typeof SettingsSchema>;
 export type SupabaseBusiness = z.infer<typeof SupabaseBusinessSchema>;
 export type Theme = z.infer<typeof ThemeSchema>;

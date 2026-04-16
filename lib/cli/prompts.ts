@@ -1,10 +1,34 @@
 import pkg from "enquirer";
-import { AnswersSchema } from "../../schema";
+import { AnswersSchema, Settings } from "../../schema";
 import ora from "ora";
 import { fetchGoogleFonts } from "../fonts";
 
 export async function gatherAnswers() {
   const { prompt } = pkg;
+
+  // const fontSpinner = ora("Fetching Google Web Fonts...").start();
+  let fontMap: Map<string, string>;
+  try {
+    fontMap = await fetchGoogleFonts();
+    // fontSpinner.succeed("✅ Google Web Fonts successfully loaded");
+  } catch {
+    await console.error(
+      "Could not fetch Google Web Fonts. Using defaults instead...",
+    );
+    // fontSpinner.warn(
+    //   "Could not fetch Google Web Fonts. Using defaults instead...",
+    // );
+    fontMap = new Map([
+      ["Inter", "Inter"],
+      ["Roboto", "Roboto"],
+      ["Playfair Display", "Playfair_Display"],
+      ["Lato", "Lato"],
+      ["Merriweather", "Merriweather"],
+      ["Montserrat", "Montserrat"],
+      ["Source Sans 3", "Source_Sans_3"],
+      ["DM Sans", "DM_Sans"],
+    ]);
+  }
 
   const businessIdentityAnswers = await prompt([
     {
@@ -155,27 +179,6 @@ export async function gatherAnswers() {
         },
       ]);
 
-  const fontSpinner = ora("Fetching Google Web Fonts...").start();
-  let fontMap: Map<string, string>;
-  try {
-    fontMap = await fetchGoogleFonts();
-    fontSpinner.succeed("✅ Google Web Fonts successfully loaded");
-  } catch {
-    fontSpinner.warn(
-      "Could not fetch Google Web Fonts. Using defaults instead...",
-    );
-    fontMap = new Map([
-      ["Inter", "Inter"],
-      ["Roboto", "Roboto"],
-      ["Playfair Display", "Playfair_Display"],
-      ["Lato", "Lato"],
-      ["Merriweather", "Merriweather"],
-      ["Montserrat", "Montserrat"],
-      ["Source Sans 3", "Source_Sans_3"],
-      ["DM Sans", "DM_Sans"],
-    ]);
-  }
-
   const themeAnswers = await prompt([
     {
       type: "select",
@@ -253,12 +256,69 @@ export async function gatherAnswers() {
     { type: "input", name: "email", message: "Admin email?" },
   ]);
 
+  const settingsAnswers = await prompt<{ settings: string[] }>([
+    {
+      type: "multiselect",
+      name: "settings",
+      message:
+        "Select the features you'd like to enable for your platform.\n  Tip: Use arrow keys to scroll and the Space bar to toggle options.\n",
+      choices: [
+        {
+          name: "is_menu_page_enabled",
+          message: "Menu page",
+          hint: "Showcase your menu to customers.",
+        },
+        {
+          name: "is_online_ordering_enabled",
+          message: "Online ordering",
+          hint: "Allow customers to order ahead of time.",
+        },
+        {
+          name: "is_pos_enabled",
+          message: "POS Integration",
+          hint: "Showcase your menu to customers.",
+          disabled: "Coming soon!",
+        },
+        {
+          name: "is_reservations_enabled",
+          message: "Reservations",
+          hint: "Allow customers to reserve a table ahead of time.",
+        },
+        {
+          name: "is_rewards_enabled",
+          message: "Rewards Program",
+          hint: "Allow customers to earn rewards for their purchases.",
+        },
+        {
+          name: "is_shop_page_enabled",
+          message: "Shop page",
+          hint: "Showcase your menu to customers.",
+        },
+      ],
+    },
+  ]);
+
+  const selectedSettings = settingsAnswers.settings;
+  const settings: Settings = {
+    is_menu_page_enabled: selectedSettings.includes("is_menu_page_enabled"),
+    is_online_ordering_enabled: selectedSettings.includes(
+      "is_online_ordering_enabled",
+    ),
+    is_pos_enabled: selectedSettings.includes("is_pos_enabled"),
+    is_reservations_enabled: selectedSettings.includes(
+      "is_reservations_enabled",
+    ),
+    is_rewards_enabled: selectedSettings.includes("is_rewards_enabled"),
+    is_shop_page_enabled: selectedSettings.includes("is_shop_page_enabled"),
+  };
+
   const answers = AnswersSchema.parse({
     ...businessIdentityAnswers,
     business_address: { ...businessAddressAnswers },
     billing_address: { ...billingAddressAnswers },
     theme: { ...themeAnswers },
     admin: { ...adminAnswers },
+    settings,
   });
 
   return { answers, fontMap };
