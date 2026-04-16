@@ -18,7 +18,7 @@ export async function provisionClient(answers: Answers) {
   });
 
   const clerkSpinner = ora(
-    `Provisioning Clerk with ${answers.name + "'" + answers.name[answers.name.length - 1] === "s" ? "" : "s"} information..`,
+    `Provisioning Clerk with ${answers.name}'${answers.name[answers.name.length - 1] === "s" ? "" : "s"} information..`,
   ).start();
 
   try {
@@ -31,10 +31,10 @@ export async function provisionClient(answers: Answers) {
     // 2. Create the user with org ID already baked into metadata
     // TODO: Prompt should ask if it's for an existing user (just ask email) or new user (ask name, email, password)
     const user = await clerk.users.createUser({
-      emailAddress: [answers.admin_email],
+      emailAddress: [answers.admin.email],
       password,
-      firstName: answers.admin_first_name,
-      lastName: answers.admin_last_name,
+      firstName: answers.admin.first_name,
+      lastName: answers.admin.last_name,
       publicMetadata: {
         businesses: [
           {

@@ -7,11 +7,37 @@ export async function gatherAnswers() {
   const { prompt } = pkg;
 
   const businessIdentityAnswers = await prompt([
-    { type: "input", name: "name", message: "Business name?" },
-    { type: "input", name: "tagline", message: "Short tagline?" },
-    { type: "input", name: "description", message: "Description?" },
-    { type: "input", name: "phone", message: "Business phone?" },
-    { type: "input", name: "email", message: "Business email?" },
+    {
+      type: "input",
+      name: "name",
+      message: "Business name?",
+      initial: "Example Restaurant",
+    },
+    {
+      type: "input",
+      name: "tagline",
+      message: "Short tagline?",
+      initial: "An example tagline.",
+    },
+    {
+      type: "input",
+      name: "description",
+      message: "Description?",
+      initial:
+        "Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus.",
+    },
+    {
+      type: "input",
+      name: "phone",
+      message: "Business phone?",
+      initial: "3125550100",
+    },
+    {
+      type: "input",
+      name: "email",
+      message: "Business email?",
+      initial: "test@example.com",
+    },
     {
       type: "select",
       name: "category",
@@ -29,23 +55,24 @@ export async function gatherAnswers() {
   const businessAddressAnswers = (await prompt([
     {
       type: "input",
-      name: "business_address_line_1",
+      name: "line_1",
       message: "Business address line 1?",
+      initial: "123 N Main St",
     },
     {
       type: "input",
-      name: "business_address_line_2",
+      name: "line_2",
       message: "Business address line 2?",
     },
     {
       type: "input",
-      name: "business_address_city",
+      name: "city",
       message: "Business address city?",
       initial: "Chicago",
     },
     {
       type: "select",
-      name: "business_address_state",
+      name: "state",
       message: "Business address state?",
       choices: [
         "IL",
@@ -54,22 +81,23 @@ export async function gatherAnswers() {
     },
     {
       type: "input",
-      name: "business_address_zip",
+      name: "zip",
       message: "Business address zip code?",
+      initial: "60600",
     },
     {
       type: "input",
-      name: "business_address_country",
+      name: "country",
       message: "Business address country?",
       initial: "USA",
     },
   ])) as {
-    business_address_line_1: string;
-    business_address_line_2: string | null;
-    business_address_city: string;
-    business_address_state: string;
-    business_address_zip: string;
-    business_address_country: string;
+    line_1: string;
+    line_2: string | null;
+    city: string;
+    state: string;
+    zip: string;
+    country: string;
   };
 
   const { is_billing_same_as_business } = (await prompt([
@@ -86,43 +114,42 @@ export async function gatherAnswers() {
 
   const billingAddressAnswers = is_billing_same_as_business
     ? {
-        billing_address_line_1: businessAddressAnswers.business_address_line_1,
-        billing_address_line_2: businessAddressAnswers.business_address_line_2,
-        billing_address_city: businessAddressAnswers.business_address_city,
-        billing_address_state: businessAddressAnswers.business_address_state,
-        billing_address_zip: businessAddressAnswers.business_address_zip,
-        billing_address_country:
-          businessAddressAnswers.business_address_country,
+        line_1: businessAddressAnswers.line_1,
+        line_2: businessAddressAnswers.line_2,
+        city: businessAddressAnswers.city,
+        state: businessAddressAnswers.state,
+        zip: businessAddressAnswers.zip,
+        country: businessAddressAnswers.country,
       }
     : await prompt([
         {
           type: "input",
-          name: "billing_address_line_1",
+          name: "line_1",
           message: "Billing address line 1?",
         },
         {
           type: "input",
-          name: "billing_address_line_2",
+          name: "line_2",
           message: "Billing address line 2?",
         },
         {
           type: "input",
-          name: "billing_address_city",
+          name: "city",
           message: "Billing address city?",
         },
         {
           type: "input",
-          name: "billing_address_state",
+          name: "state",
           message: "Billing address state?",
         },
         {
           type: "input",
-          name: "billing_address_zip",
+          name: "zip",
           message: "Billing address zip code?",
         },
         {
           type: "input",
-          name: "billing_address_country",
+          name: "country",
           message: "Billing address country?",
           initial: "USA",
         },
@@ -220,18 +247,18 @@ export async function gatherAnswers() {
   ]);
 
   const adminAnswers = await prompt([
-    { type: "input", name: "admin_first_name", message: "Admin first name?" },
-    { type: "input", name: "admin_last_name", message: "Admin last name?" },
-    { type: "input", name: "admin_phone", message: "Admin phone?" },
-    { type: "input", name: "admin_email", message: "Admin email?" },
+    { type: "input", name: "first_name", message: "Admin first name?" },
+    { type: "input", name: "last_name", message: "Admin last name?" },
+    { type: "input", name: "phone", message: "Admin phone?" },
+    { type: "input", name: "email", message: "Admin email?" },
   ]);
 
   const answers = AnswersSchema.parse({
     ...businessIdentityAnswers,
-    ...businessAddressAnswers,
-    ...billingAddressAnswers,
-    ...themeAnswers,
-    ...adminAnswers,
+    business_address: { ...businessAddressAnswers },
+    billing_address: { ...billingAddressAnswers },
+    theme: { ...themeAnswers },
+    admin: { ...adminAnswers },
   });
 
   return { answers, fontMap };

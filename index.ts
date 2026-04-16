@@ -16,7 +16,7 @@ config({ path: join(__dirname, ".env.local") });
 console.log(chalk.bold.hex("#F5853F")("\nFEAST Website Generator\n"));
 
 // 1. Gather answers from the user via prompts.
-const { answers } = await gatherAnswers();
+export const { answers, fontMap } = await gatherAnswers();
 
 // 2. Provision Clerk org and user.
 const { userEmail, password, orgId, slug } = await provisionClient(answers);

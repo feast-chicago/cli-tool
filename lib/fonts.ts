@@ -48,7 +48,8 @@ export const primaryFont = ${primaryNextFont}({
 export const secondaryFont = ${secondaryNextFont}({
   subsets: ["latin"],
   variable: "--font-secondary",
-});`;
+});
+`;
 
   await fs.writeFile(join(rootPath, "lib", "fonts.ts"), content);
 }

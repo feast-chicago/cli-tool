@@ -5,7 +5,7 @@ import { join } from "path";
 import fs from "fs-extra";
 import { createTheme, generateCssVariables } from "../theme";
 import { writeFonts } from "../fonts";
-import { gatherAnswers } from "./prompts";
+import { fontMap } from "../..";
 
 export async function createRepository(
   orgId: string,
@@ -17,7 +17,7 @@ export async function createRepository(
   const rootPath = join(process.cwd(), `../clients/${slug}-site`);
 
   const copySpinner = ora(
-    `Copying a "${answers.platform_theme}"-themed template for "${answers.name}"...`,
+    `Copying a "${answers.theme.platform_theme}"-themed template for "${answers.name}"...`,
   ).start();
   await fs.copy(templatePath, rootPath);
   copySpinner.succeed(`✅ Template successfully copied to ${rootPath}`);
@@ -37,16 +37,15 @@ export async function createRepository(
   await fs.copy(join(process.cwd(), "schema.ts"), join(rootPath, "schema.ts"));
   schemaSpinner.succeed("✅ schema.ts successfully created");
 
-  // Copy the schema file to the new directory
+  // Create a fonts file for the custom selected Google Web Fonts to the new directory
   const fontSpinner = ora(
     `Creating a fonts file for "${answers.name}"...`,
   ).start();
 
-  const { fontMap } = await gatherAnswers();
   await writeFonts(
     rootPath,
-    answers.primary_font,
-    answers.secondary_font,
+    answers.theme.primary_font,
+    answers.theme.secondary_font,
     fontMap,
   );
   fontSpinner.succeed("✅ fonts.ts successfully created");
@@ -55,17 +54,7 @@ export async function createRepository(
   const themeSpinner = ora(
     `Creating a globals.css file for "${answers.name}"...`,
   ).start();
-  const theme = createTheme({
-    platform_theme: answers.platform_theme,
-    primary_brand_color: answers.primary_brand_color,
-    secondary_brand_color: answers.secondary_brand_color,
-    accent_brand_color: answers.accent_brand_color,
-    background_color: answers.background_color,
-    primary_font: answers.primary_font,
-    secondary_font: answers.secondary_font,
-    radius: answers.radius,
-    is_dark_mode_enabled: answers.is_dark_mode_enabled,
-  });
+  const theme = createTheme({ ...answers.theme });
   const cssVars = generateCssVariables(theme);
 
   // Read the existing globals.css from the copied template.
