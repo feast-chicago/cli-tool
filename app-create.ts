@@ -6,14 +6,14 @@ import { dirname, join } from "path";
 import chalk from "chalk";
 import { gatherAnswers } from "./lib/cli/prompts";
 import { provisionClient } from "./lib/cli/clerk";
-import { seedBusiness } from "./lib/cli/supabase";
-import { createRepository } from "./lib/cli/repository";
+import { createBusiness } from "./lib/cli/supabase";
+import { createRepository } from "./lib/cli/repo/createRepo";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 config({ path: join(__dirname, ".env.local") });
 
-console.log(chalk.bold.hex("#F5853F")("\nFEAST Website Generator\n"));
+console.log(chalk.bold.hex("#F5853F")("\nFEAST App Generator\n"));
 
 // 1. Gather answers from the user via prompts.
 export const { answers, fontMap } = await gatherAnswers();
@@ -22,7 +22,7 @@ export const { answers, fontMap } = await gatherAnswers();
 const { userEmail, password, orgId, slug } = await provisionClient(answers);
 
 // 3. Seed Supabase with business info.
-await seedBusiness(answers, orgId);
+await createBusiness(answers, orgId);
 
 // 4. Copy the template to a new directory.
 const { rootPath } = await createRepository(orgId, slug, answers);

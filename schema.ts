@@ -85,7 +85,7 @@ export const ClerkProvisionSchema = z.object({
   businesses: z.array(z.string()).min(1),
 });
 
-export const SupabaseBusinessSchema = AnswersSchema.extend({
+export const BusinessSchema = AnswersSchema.extend({
   // info
   id: z.string().min(1),
   created_at: z.date(),
@@ -132,8 +132,10 @@ export const ConfigSchema = z.object({
   description: z.string().nullable(),
 });
 
-export type FeastConfig = z.infer<typeof ConfigSchema>;
+export type Address = z.infer<typeof AddressSchema>;
+export type Admin = z.infer<typeof AdminSchema>;
 export type Answers = z.infer<typeof AnswersSchema>;
+export type Business = z.infer<typeof BusinessSchema>;
+export type FeastConfig = z.infer<typeof ConfigSchema>;
 export type Settings = z.infer<typeof SettingsSchema>;
-export type SupabaseBusiness = z.infer<typeof SupabaseBusinessSchema>;
 export type Theme = z.infer<typeof ThemeSchema>;

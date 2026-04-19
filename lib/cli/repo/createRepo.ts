@@ -1,11 +1,12 @@
 import { execa } from "execa";
 import ora from "ora";
-import { Answers, FeastConfig } from "../../schema";
+import { Answers } from "../../../schema";
 import { join } from "path";
 import fs from "fs-extra";
-import { createTheme, generateCssVariables } from "../theme";
-import { writeFonts } from "../fonts";
-import { fontMap } from "../..";
+import { createTheme, generateCssVariables } from "../../theme";
+import { writeFonts } from "../../fonts";
+import { fontMap } from "../../../app-create";
+import { buildConfig } from "../../../utils/buildConfig";
 
 export async function createRepository(
   orgId: string,
@@ -26,7 +27,7 @@ export async function createRepository(
   const configSpinner = ora(
     `Creating a config file for "${answers.name}"...`,
   ).start();
-  const configContent = `module.exports = ${JSON.stringify(buildConfig(answers, orgId), null, 2)}\n`;
+  const configContent = buildConfig(answers, orgId);
   await fs.writeFile(join(rootPath, "feast.config.ts"), configContent);
   configSpinner.succeed("✅ feast.config.ts successfully created");
 
@@ -54,8 +55,8 @@ export async function createRepository(
   const themeSpinner = ora(
     `Creating a globals.css file for "${answers.name}"...`,
   ).start();
-  const theme = createTheme({ ...answers.theme });
-  const cssVars = generateCssVariables(theme);
+  const cssTheme = createTheme({ ...answers.theme });
+  const cssVars = generateCssVariables(cssTheme);
 
   // Read the existing globals.css from the copied template.
   const cssPath = join(rootPath, "app", "globals.css");
@@ -83,9 +84,4 @@ export async function createRepository(
   }
 
   return { rootPath };
-}
-
-function buildConfig(answers: Answers, id: string): FeastConfig {
-  const { name, description } = answers;
-  return { id, name, description };
 }

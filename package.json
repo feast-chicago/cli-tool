@@ -1,11 +1,12 @@
 {
-  "name": "create-feast-site",
+  "name": "feast-cli-tool",
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
   "type": "module",
   "bin": {
-    "create-feast-app": "./index.ts"
+    "create-feast-app": "./app-create.ts",
+    "update-feast-app": "./app-update.ts"
   },
   "scripts": {
     "dev": "tsx index.ts"
