@@ -1,7 +1,7 @@
 import pkg from "enquirer";
 import { AnswersSchema, Settings } from "../../schema";
-import ora from "ora";
 import { fetchGoogleFonts } from "../fonts";
+import { exmampleAnswers } from "../../exampleData";
 
 export async function gatherAnswers() {
   const { prompt } = pkg;
@@ -30,37 +30,56 @@ export async function gatherAnswers() {
     ]);
   }
 
+  const {
+    name,
+    tagline,
+    description,
+    phone,
+    email,
+    business_address,
+    billing_address,
+    theme,
+    admin,
+  } = exmampleAnswers;
+  const { line_1, line_2, city, zip_code, country } = business_address;
+  const {
+    primary_brand_color,
+    secondary_brand_color,
+    accent_brand_color,
+    background_color,
+  } = theme;
+  const { first_name, last_name } = admin;
+
   const businessIdentityAnswers = await prompt([
     {
       type: "input",
       name: "name",
       message: "Business name?",
-      initial: "Example Restaurant",
+      initial: name,
     },
     {
       type: "input",
       name: "tagline",
       message: "Short tagline?",
-      initial: "An example tagline.",
+      initial: tagline,
     },
     {
       type: "input",
       name: "description",
       message: "Description?",
-      initial:
-        "Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus.",
+      initial: description,
     },
     {
       type: "input",
       name: "phone",
       message: "Business phone?",
-      initial: "3125550100",
+      initial: phone,
     },
     {
       type: "input",
       name: "email",
       message: "Business email?",
-      initial: "test@example.com",
+      initial: email,
     },
     {
       type: "select",
@@ -81,18 +100,19 @@ export async function gatherAnswers() {
       type: "input",
       name: "line_1",
       message: "Business address line 1?",
-      initial: "123 N Main St",
+      initial: line_1,
     },
     {
       type: "input",
       name: "line_2",
       message: "Business address line 2?",
+      initial: line_2,
     },
     {
       type: "input",
       name: "city",
       message: "Business address city?",
-      initial: "Chicago",
+      initial: city,
     },
     {
       type: "select",
@@ -105,22 +125,22 @@ export async function gatherAnswers() {
     },
     {
       type: "input",
-      name: "zip",
+      name: "zip_code",
       message: "Business address zip code?",
-      initial: "60600",
+      initial: zip_code,
     },
     {
       type: "input",
       name: "country",
       message: "Business address country?",
-      initial: "USA",
+      initial: country,
     },
   ])) as {
     line_1: string;
     line_2: string | null;
     city: string;
     state: string;
-    zip: string;
+    zip_code: string;
     country: string;
   };
 
@@ -142,7 +162,7 @@ export async function gatherAnswers() {
         line_2: businessAddressAnswers.line_2,
         city: businessAddressAnswers.city,
         state: businessAddressAnswers.state,
-        zip: businessAddressAnswers.zip,
+        zip_code: businessAddressAnswers.zip_code,
         country: businessAddressAnswers.country,
       }
     : await prompt([
@@ -168,7 +188,7 @@ export async function gatherAnswers() {
         },
         {
           type: "input",
-          name: "zip",
+          name: "zip_code",
           message: "Billing address zip code?",
         },
         {
@@ -201,25 +221,25 @@ export async function gatherAnswers() {
       type: "input",
       name: "primary_brand_color",
       message: "Primary brand color (hex)?",
-      initial: "#000000",
+      initial: primary_brand_color,
     },
     {
       type: "input",
       name: "secondary_brand_color",
       message: "Secondary brand color (hex)?",
-      initial: "#000000",
+      initial: secondary_brand_color,
     },
     {
       type: "input",
       name: "accent_brand_color",
       message: "Accent brand color (hex)?",
-      initial: "#000000",
+      initial: accent_brand_color,
     },
     {
       type: "input",
       name: "background_color",
       message: "Background color (hex)?",
-      initial: "#f5f5f5",
+      initial: background_color,
     },
     {
       type: "autocomplete",
@@ -250,10 +270,30 @@ export async function gatherAnswers() {
   ]);
 
   const adminAnswers = await prompt([
-    { type: "input", name: "first_name", message: "Admin first name?" },
-    { type: "input", name: "last_name", message: "Admin last name?" },
-    { type: "input", name: "phone", message: "Admin phone?" },
-    { type: "input", name: "email", message: "Admin email?" },
+    {
+      type: "input",
+      name: "first_name",
+      message: "Admin first name?",
+      initial: first_name,
+    },
+    {
+      type: "input",
+      name: "last_name",
+      message: "Admin last name?",
+      initial: last_name,
+    },
+    {
+      type: "input",
+      name: "phone",
+      message: "Admin phone?",
+      initial: admin.phone,
+    },
+    {
+      type: "input",
+      name: "email",
+      message: "Admin email?",
+      initial: admin.email,
+    },
   ]);
 
   const settingsAnswers = await prompt<{ settings: string[] }>([

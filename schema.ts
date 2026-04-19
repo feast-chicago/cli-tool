@@ -5,7 +5,7 @@ const AddressSchema = z.object({
   line_2: z.string().nullable(),
   city: z.string().min(1),
   state: z.string().min(1),
-  zip: z.string().min(1),
+  zip_code: z.string().min(1),
   country: z.string().min(1),
 });
 

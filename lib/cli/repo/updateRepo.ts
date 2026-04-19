@@ -6,7 +6,7 @@ import ora from "ora";
 import { buildConfig } from "../../../utils/buildConfig";
 import { createTheme, generateCssVariables } from "../../theme";
 
-export async function updateRepository(orgId: string, answers: Answers) {
+export async function updateRepo(answers: Answers, orgId: string) {
   // const fontSpinner = ora("Fetching Google Web Fonts...").start();
   let fontMap: Map<string, string>;
   try {

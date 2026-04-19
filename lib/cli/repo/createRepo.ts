@@ -8,10 +8,10 @@ import { writeFonts } from "../../fonts";
 import { fontMap } from "../../../app-create";
 import { buildConfig } from "../../../utils/buildConfig";
 
-export async function createRepository(
+export async function createRepo(
+  answers: Answers,
   orgId: string,
   slug: string,
-  answers: Answers,
 ) {
   // Copy the template to a new directory named after the business.
   const templatePath = join(process.cwd(), "../template");

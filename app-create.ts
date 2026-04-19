@@ -7,7 +7,7 @@ import chalk from "chalk";
 import { gatherAnswers } from "./lib/cli/prompts";
 import { provisionClient } from "./lib/cli/clerk";
 import { createBusiness } from "./lib/cli/supabase";
-import { createRepository } from "./lib/cli/repo/createRepo";
+import { createRepo } from "./lib/cli/repo/createRepo";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -25,7 +25,7 @@ const { userEmail, password, orgId, slug } = await provisionClient(answers);
 await createBusiness(answers, orgId);
 
 // 4. Copy the template to a new directory.
-const { rootPath } = await createRepository(orgId, slug, answers);
+const { rootPath } = await createRepo(answers, orgId, slug);
 
 // TODO: 5. Deploy site to GitHub/Vercel.
 
