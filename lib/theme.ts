@@ -1,5 +1,6 @@
 import { oklch, parse } from "culori";
 import { Theme } from "../schema";
+import { formatNumber } from "../utils/math";
 
 interface ThemeVars {
   "--background": string;
@@ -40,7 +41,7 @@ interface ThemeVars {
 function toOklchValues(hex: string): string {
   const color = oklch(parse(hex));
   if (!color) throw new Error(`Invalid hex: ${hex}`);
-  return `${color.l.toFixed(3)} ${color.c.toFixed(3)} ${(color.h ?? 0).toFixed(3)}`;
+  return `${formatNumber(color.l)} ${formatNumber(color.c)} ${formatNumber(color.h ?? 0)}`;
 }
 
 function getForeground(hex: string): string {
@@ -92,13 +93,13 @@ export function createTheme(theme: Theme) {
   // by nudging lightness up slightly for light themes, down for dark
 
   const cardL = isLightBg
-    ? Math.min(bgColor.l + 0.02, 1).toFixed(3)
-    : Math.max(bgColor.l + 0.04, 0).toFixed(3);
-  const card = `${cardL} ${bgColor.c.toFixed(3)} ${(bgColor.h ?? 0).toFixed(3)}`;
+    ? formatNumber(Math.min(bgColor.l + 0.02, 1))
+    : formatNumber(Math.max(bgColor.l + 0.04, 0));
+  const card = `${cardL} ${formatNumber(bgColor.c)} ${formatNumber(bgColor.h ?? 0)}`;
   const mutedL = isLightBg
-    ? Math.max(bgColor.l - 0.03, 0).toFixed(3)
-    : Math.min(bgColor.l + 0.08, 1).toFixed(3);
-  const muted = `${mutedL} ${bgColor.c.toFixed(3)} ${(bgColor.h ?? 0).toFixed(3)}`;
+    ? formatNumber(Math.max(bgColor.l - 0.03, 0))
+    : formatNumber(Math.min(bgColor.l + 0.08, 1));
+  const muted = `${mutedL} ${formatNumber(bgColor.c)} ${formatNumber(bgColor.h ?? 0)}`;
 
   const radius = getRadius(theme.radius);
 
@@ -106,7 +107,7 @@ export function createTheme(theme: Theme) {
   const primaryColor = oklch(parse(theme.primary_brand_color))!;
   const chartColors = [0.87, 0.7, 0.55, 0.4, 0.27].map(
     (l) =>
-      `oklch(${l.toFixed(3)} ${Math.min(primaryColor.c * 0.6, 0.12).toFixed(3)} ${(primaryColor.h ?? 0).toFixed(3)})`,
+      `oklch(${formatNumber(l)} ${formatNumber(Math.min(primaryColor.c * 0.6, 0.12))} ${formatNumber(primaryColor.h ?? 0)})`,
   );
 
   const light: ThemeVars = {
@@ -148,11 +149,11 @@ export function createTheme(theme: Theme) {
   // dark mode inverts primary and nudges background to near-black
   // while preserving the hue of the chosen background color
   const dark: ThemeVars = {
-    "--background": `oklch(0.145 ${bgColor.c.toFixed(3)} ${(bgColor.h ?? 0).toFixed(3)})`,
+    "--background": `oklch(0.145 ${formatNumber(bgColor.c)} ${formatNumber(bgColor.h ?? 0)})`,
     "--foreground": "oklch(0.985 0 0)",
-    "--card": `oklch(0.205 ${bgColor.c.toFixed(3)} ${(bgColor.h ?? 0).toFixed(3)})`,
+    "--card": `oklch(0.205 ${formatNumber(bgColor.c)} ${formatNumber(bgColor.h ?? 0)})`,
     "--card-foreground": "oklch(0.985 0 0)",
-    "--popover": `oklch(0.205 ${bgColor.c.toFixed(3)} ${(bgColor.h ?? 0).toFixed(3)})`,
+    "--popover": `oklch(0.205 ${formatNumber(bgColor.c)} ${formatNumber(bgColor.h ?? 0)})`,
     "--popover-foreground": "oklch(0.985 0 0)",
     "--primary": `oklch(${primaryFg})`,
     "--primary-foreground": `oklch(${primary})`,

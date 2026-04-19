@@ -73,11 +73,12 @@ export async function updateRepo(answers: Answers, orgId: string) {
   let css = await fs.readFile(cssPath, "utf8");
 
   // Replace the :root and .dark blocks with the generated ones.
-  // TODO: Ensure no extra whitespace is accidentally added or removed in the process.
   css = css
     .replace(/:root\s*\{[\s\S]*?\}/, "")
-    .replace(/\.dark\s*\{[\s\S]*?\}/, "");
-  css += "\n" + cssVars;
+    .replace(/\.dark\s*\{[\s\S]*?\}/, "")
+    .trimEnd();
+
+  css += "\n\n" + cssVars;
 
   // Write the updated CSS back to the file.
   await fs.writeFile(cssPath, css);

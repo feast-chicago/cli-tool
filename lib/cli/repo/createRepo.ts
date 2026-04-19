@@ -63,10 +63,11 @@ export async function createRepo(
   let css = await fs.readFile(cssPath, "utf8");
 
   // Replace the :root and .dark blocks with the generated ones.
-  // TODO: Ensure no extra whitespace is accidentally added or removed in the process.
   css = css
     .replace(/:root\s*\{[\s\S]*?\}/, "")
-    .replace(/\.dark\s*\{[\s\S]*?\}/, "");
+    .replace(/\.dark\s*\{[\s\S]*?\}/, "")
+    .trimEnd();
+
   css += "\n" + cssVars;
 
   // Write the updated CSS back to the file.
