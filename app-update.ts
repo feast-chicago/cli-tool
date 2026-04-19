@@ -12,7 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 config({ path: join(__dirname, ".env.local") });
 
-console.log(chalk.bold.hex("#F5853F")("\nFEAST App Generator\n"));
+console.log(chalk.bold.hex("#F5853F")("\nFEAST App CLI Tool\n"));
 
 const orgId = "org_3CS2GyhazeMC3QLKLlWMiqoUWWL";
 
