@@ -11,10 +11,10 @@ const business_address: Address = {
 const billing_address = business_address;
 const theme: Theme = {
   platform_theme: "basic",
-  primary_brand_color: "#000000",
-  secondary_brand_color: "#000000",
-  accent_brand_color: "#000000",
-  background_color: "#f5f5f5",
+  primary_brand_color: "#B5451B", // Terracotta
+  secondary_brand_color: "#3B7A57", // Forest
+  accent_brand_color: "#D4A017", // Gold
+  background_color: "#FAF7F2", // Cream
   primary_font: "Inter",
   secondary_font: "Inter",
   radius: "Default",
