@@ -8,11 +8,9 @@
     "create-feast-app": "./app-create.ts",
     "update-feast-app": "./app-update.ts"
   },
-  "scripts": {
-    "dev": "tsx index.ts"
-  },
   "dependencies": {
     "@clerk/backend": "^3.2.3",
+    "@dotenvx/dotenvx": "^1.69.2",
     "@supabase/supabase-js": "^2.101.1",
     "chalk": "^5.6.2",
     "culori": "^4.0.2",

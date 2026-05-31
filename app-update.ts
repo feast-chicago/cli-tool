@@ -1,12 +1,12 @@
 #!/usr/bin/env tsx
 
-import { config } from "dotenv";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
 import chalk from "chalk";
-import { updateBusiness } from "./lib/cli/supabase";
-import { updateRepo } from "./lib/cli/repo/updateRepo";
+import { config } from "dotenv";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 import { exampleOrgId, exmampleAnswers } from "./exampleData";
+import { updateRepo } from "./lib/cli/repo/updateRepo";
+import { updateBusiness } from "./lib/cli/supabase";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

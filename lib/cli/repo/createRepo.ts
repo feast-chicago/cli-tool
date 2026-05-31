@@ -1,12 +1,12 @@
 import { execa } from "execa";
-import ora from "ora";
-import { Answers } from "../../../schema";
-import { join } from "path";
 import fs from "fs-extra";
-import { createTheme, generateCssVariables } from "../../theme";
-import { writeFonts } from "../../fonts";
+import ora from "ora";
+import { join } from "path";
 import { fontMap } from "../../../app-create";
+import { Answers } from "../../../schema";
 import { buildConfig } from "../../../utils/buildConfig";
+import { writeFonts } from "../../fonts";
+import { createTheme, generateCssVariables } from "../../theme";
 
 export async function createRepo(
   answers: Answers,
@@ -18,14 +18,14 @@ export async function createRepo(
   const rootPath = join(process.cwd(), `../clients/${slug}-site`);
 
   const copySpinner = ora(
-    `Copying a "${answers.theme.platform_theme}"-themed template for "${answers.name}"...`,
+    `Copying a "${answers.theme.platform_theme}" template for ${answers.name}...`,
   ).start();
   await fs.copy(templatePath, rootPath);
   copySpinner.succeed(`✅ Template successfully copied to ${rootPath}`);
 
   // Create a config file with the business info and theme preferences to be used by the app.
   const configSpinner = ora(
-    `Creating a config file for "${answers.name}"...`,
+    `Creating a config file for ${answers.name}...`,
   ).start();
   const configContent = buildConfig(answers, orgId);
   await fs.writeFile(join(rootPath, "feast.config.ts"), configContent);
@@ -33,14 +33,14 @@ export async function createRepo(
 
   // Copy the schema file to the new directory
   const schemaSpinner = ora(
-    `Creating a schema file for "${answers.name}"...`,
+    `Creating a schema file for ${answers.name}...`,
   ).start();
   await fs.copy(join(process.cwd(), "schema.ts"), join(rootPath, "schema.ts"));
   schemaSpinner.succeed("✅ schema.ts successfully created");
 
   // Create a fonts file for the custom selected Google Web Fonts to the new directory
   const fontSpinner = ora(
-    `Creating a fonts file for "${answers.name}"...`,
+    `Creating a fonts file for ${answers.name}...`,
   ).start();
 
   await writeFonts(
@@ -53,7 +53,7 @@ export async function createRepo(
 
   // Generate CSS variables from the user's preferences and write them to globals.css.
   const themeSpinner = ora(
-    `Creating a globals.css file for "${answers.name}"...`,
+    `Creating a globals.css file for ${answers.name}...`,
   ).start();
   const cssTheme = createTheme({ ...answers.theme });
   const cssVars = generateCssVariables(cssTheme);
@@ -74,7 +74,7 @@ export async function createRepo(
   await fs.writeFile(cssPath, css);
   themeSpinner.succeed("✅ globals.css successfully created");
 
-  // Install dependencies in the new directory.
+  // Verify that dependencies are fully installed in the new directory.
   const installSpinner = ora("Installing dependencies...").start();
   try {
     await execa("npm", ["install"], { cwd: rootPath });

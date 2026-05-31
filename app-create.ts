@@ -1,13 +1,13 @@
 #!/usr/bin/env tsx
 
-import { config } from "dotenv";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
 import chalk from "chalk";
-import { gatherAnswers } from "./lib/cli/prompts";
+import { config } from "dotenv";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 import { provisionClient } from "./lib/cli/clerk";
-import { createBusiness } from "./lib/cli/supabase";
+import { gatherAnswers } from "./lib/cli/prompts";
 import { createRepo } from "./lib/cli/repo/createRepo";
+import { createBusiness } from "./lib/cli/supabase";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

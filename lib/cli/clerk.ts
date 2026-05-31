@@ -1,8 +1,9 @@
 import { createClerkClient } from "@clerk/backend";
+import "@dotenvx/dotenvx/config";
 import generator from "generate-password";
-import { createSlug } from "../../utils/slug";
-import { Answers } from "../../schema";
 import ora from "ora";
+import { Answers } from "../../schema";
+import { createSlug } from "../../utils/slug";
 
 export async function provisionClient(answers: Answers) {
   const clerk = createClerkClient({

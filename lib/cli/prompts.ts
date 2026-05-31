@@ -1,7 +1,7 @@
 import pkg from "enquirer";
+import { exmampleAnswers } from "../../exampleData";
 import { AnswersSchema, Settings } from "../../schema";
 import { fetchGoogleFonts } from "../fonts";
-import { exmampleAnswers } from "../../exampleData";
 
 export async function gatherAnswers() {
   const { prompt } = pkg;
@@ -12,9 +12,7 @@ export async function gatherAnswers() {
     fontMap = await fetchGoogleFonts();
     // fontSpinner.succeed("✅ Google Web Fonts successfully loaded");
   } catch {
-    await console.error(
-      "Could not fetch Google Web Fonts. Using defaults instead...",
-    );
+    // await console.error(err);
     // fontSpinner.warn(
     //   "Could not fetch Google Web Fonts. Using defaults instead...",
     // );
@@ -37,17 +35,11 @@ export async function gatherAnswers() {
     phone,
     email,
     business_address,
-    billing_address,
     theme,
     admin,
   } = exmampleAnswers;
   const { line_1, line_2, city, zip_code, country } = business_address;
-  const {
-    primary_brand_color,
-    secondary_brand_color,
-    accent_brand_color,
-    background_color,
-  } = theme;
+  const { primary_brand_color, secondary_brand_color } = theme;
   const { first_name, last_name } = admin;
 
   const businessIdentityAnswers = await prompt([
@@ -230,18 +222,6 @@ export async function gatherAnswers() {
       initial: secondary_brand_color,
     },
     {
-      type: "input",
-      name: "accent_brand_color",
-      message: "Accent brand color (hex)?",
-      initial: accent_brand_color,
-    },
-    {
-      type: "input",
-      name: "background_color",
-      message: "Background color (hex)?",
-      initial: background_color,
-    },
-    {
       type: "autocomplete",
       name: "primary_font",
       message: "Primary brand font?",
@@ -316,8 +296,8 @@ export async function gatherAnswers() {
         {
           name: "is_pos_enabled",
           message: "POS Integration",
-          hint: "Showcase your menu to customers.",
-          disabled: "Coming soon!",
+          hint: "Integrate your website with your preferred POS system.",
+          disabled: true,
         },
         {
           name: "is_reservations_enabled",
@@ -325,14 +305,24 @@ export async function gatherAnswers() {
           hint: "Allow customers to reserve a table ahead of time.",
         },
         {
+          name: "is_customer_accounts_enabled",
+          message: "Customers accounts",
+          hint: "Allow customers to create accounts.",
+        },
+        {
           name: "is_rewards_enabled",
-          message: "Rewards Program",
-          hint: "Allow customers to earn rewards for their purchases.",
+          message: "Rewards",
+          hint: 'Allow customers to earn rewards for their purchases. Only available if "Customer accounts" is enabled.',
         },
         {
           name: "is_shop_page_enabled",
           message: "Shop page",
-          hint: "Showcase your menu to customers.",
+          hint: "Showcase your catalog to customers.",
+        },
+        {
+          name: "is_catering_enabled",
+          message: "Catering page",
+          hint: "Expand the reach of your business with catering.",
         },
       ],
     },
@@ -348,8 +338,12 @@ export async function gatherAnswers() {
     is_reservations_enabled: selectedSettings.includes(
       "is_reservations_enabled",
     ),
+    is_customer_accounts_enabled: selectedSettings.includes(
+      "is_customer_accounts_enabled",
+    ),
     is_rewards_enabled: selectedSettings.includes("is_rewards_enabled"),
     is_shop_page_enabled: selectedSettings.includes("is_shop_page_enabled"),
+    is_catering_enabled: selectedSettings.includes("is_catering_enabled"),
   };
 
   const answers = AnswersSchema.parse({

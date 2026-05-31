@@ -1,3 +1,4 @@
+import "@dotenvx/dotenvx/config";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
 let client: SupabaseClient | null = null;

@@ -21,9 +21,13 @@ const SettingsSchema = z.object({
   is_online_ordering_enabled: z.boolean(),
   is_pos_enabled: z.boolean(),
   is_reservations_enabled: z.boolean(),
+  is_customer_accounts_enabled: z.boolean(),
   is_rewards_enabled: z.boolean(),
   is_shop_page_enabled: z.boolean(),
+  is_catering_enabled: z.boolean(),
 });
+
+const HexColorSchema = z.string().regex(/^#[0-9A-Fa-f]{6}$/);
 
 const ThemeSchema = z.object({
   platform_theme: z.enum([
@@ -38,16 +42,8 @@ const ThemeSchema = z.object({
     // "neighborhood",
     // "retro",
   ]),
-  primary_brand_color: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
-  secondary_brand_color: z
-    .string()
-    .regex(/^#[0-9A-Fa-f]{6}$/)
-    .nullable(),
-  accent_brand_color: z
-    .string()
-    .regex(/^#[0-9A-Fa-f]{6}$/)
-    .nullable(),
-  background_color: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
+  primary_brand_color: HexColorSchema,
+  secondary_brand_color: HexColorSchema.nullable(),
   primary_font: z.string().min(1),
   secondary_font: z.string().nullable(),
   radius: z.enum(["Default", "None", "Small", "Medium", "Large"]),
