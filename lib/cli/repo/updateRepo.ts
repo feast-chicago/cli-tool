@@ -32,7 +32,7 @@ export async function updateRepo(answers: Answers, orgId: string) {
   }
 
   // Copy the template to a new directory named after the business.
-  const templatePath = join(process.cwd(), "../template");
+  const templatePath = join(process.cwd(), "../site-template");
 
   // Update the config file with test data.
   const configSpinner = ora("Updating the config file...").start();

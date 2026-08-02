@@ -27,6 +27,8 @@ const admin: Admin = {
 const settings: Settings = {
   is_menu_page_enabled: true,
   is_online_ordering_enabled: true,
+  is_scheduled_ordering_enabled: false,
+  is_group_ordering_enabled: false,
   is_pos_enabled: false,
   is_reservations_enabled: false,
   is_customer_accounts_enabled: true,

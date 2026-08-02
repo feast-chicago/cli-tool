@@ -294,6 +294,16 @@ export async function gatherAnswers() {
           hint: "Allow customers to order ahead of time.",
         },
         {
+          name: "is_scheduled_ordering_enabled",
+          message: "Scheduled ordering",
+          hint: "Allow customers to order ahead of time.",
+        },
+        {
+          name: "is_group_ordering_enabled",
+          message: "Group ordering",
+          hint: "Allow customers to order in groups.",
+        },
+        {
           name: "is_pos_enabled",
           message: "POS Integration",
           hint: "Integrate your website with your preferred POS system.",
@@ -333,6 +343,12 @@ export async function gatherAnswers() {
     is_menu_page_enabled: selectedSettings.includes("is_menu_page_enabled"),
     is_online_ordering_enabled: selectedSettings.includes(
       "is_online_ordering_enabled",
+    ),
+    is_scheduled_ordering_enabled: selectedSettings.includes(
+      "is_scheduled_ordering_enabled",
+    ),
+    is_group_ordering_enabled: selectedSettings.includes(
+      "is_group_ordering_enabled",
     ),
     is_pos_enabled: selectedSettings.includes("is_pos_enabled"),
     is_reservations_enabled: selectedSettings.includes(

@@ -19,6 +19,8 @@ const AdminSchema = z.object({
 const SettingsSchema = z.object({
   is_menu_page_enabled: z.boolean(),
   is_online_ordering_enabled: z.boolean(),
+  is_scheduled_ordering_enabled: z.boolean(),
+  is_group_ordering_enabled: z.boolean(),
   is_pos_enabled: z.boolean(),
   is_reservations_enabled: z.boolean(),
   is_customer_accounts_enabled: z.boolean(),

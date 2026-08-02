@@ -14,7 +14,7 @@ export async function createRepo(
   slug: string,
 ) {
   // Copy the template to a new directory named after the business.
-  const templatePath = join(process.cwd(), "../template");
+  const templatePath = join(process.cwd(), "../site-template");
   const rootPath = join(process.cwd(), `../clients/${slug}-site`);
 
   const copySpinner = ora(
