@@ -7,6 +7,7 @@ import { Answers } from "../../../schema";
 import { buildConfig } from "../../../utils/buildConfig";
 import { writeFonts } from "../../fonts";
 import { createTheme, generateCssVariables } from "../../theme";
+import { buildUtils } from "../../../utils/buildUtils";
 
 export async function createRepo(
   answers: Answers,
@@ -23,7 +24,7 @@ export async function createRepo(
   await fs.copy(templatePath, rootPath);
   copySpinner.succeed(`✅ Template successfully copied to ${rootPath}`);
 
-  // Create a config file with the business info and theme preferences to be used by the app.
+  // Overwrite the template config file with the business' info.
   const configSpinner = ora(
     `Creating a config file for ${answers.name}...`,
   ).start();
@@ -31,7 +32,7 @@ export async function createRepo(
   await fs.writeFile(join(rootPath, "feast.config.ts"), configContent);
   configSpinner.succeed("✅ feast.config.ts successfully created");
 
-  // Copy the schema file to the new directory
+  // Ensure the most updated version of the schema is added to the new directory.
   const schemaSpinner = ora(
     `Creating a schema file for ${answers.name}...`,
   ).start();
@@ -73,6 +74,14 @@ export async function createRepo(
   // Write the updated CSS back to the file.
   await fs.writeFile(cssPath, css);
   themeSpinner.succeed("✅ globals.css successfully created");
+
+  // Overwrite the utils.ts file to include the most updated theme/CSS generation functions.
+  const utilsSpinner = ora(
+    `Updating the utils.ts file for ${answers.name}...`,
+  ).start();
+  const utilsContent = buildUtils();
+  await fs.writeFile(join(rootPath, "lib", "utils.ts"), utilsContent);
+  utilsSpinner.succeed("✅ utils.ts successfully updated");
 
   // Verify that dependencies are fully installed in the new directory.
   const installSpinner = ora("Installing dependencies...").start();

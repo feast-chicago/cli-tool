@@ -3,6 +3,7 @@ import ora from "ora";
 import { join } from "path";
 import { Answers } from "../../../schema";
 import { buildConfig } from "../../../utils/buildConfig";
+import { buildUtils } from "../../../utils/buildUtils";
 import { fetchGoogleFonts, writeFonts } from "../../fonts";
 import { createTheme, generateCssVariables } from "../../theme";
 
@@ -83,4 +84,12 @@ export async function updateRepo(answers: Answers, orgId: string) {
   // Write the updated CSS back to the file.
   await fs.writeFile(cssPath, css);
   themeSpinner.succeed("✅ globals.css successfully updated");
+
+  // Overwrite the utils.ts file to include the most updated theme/CSS generation functions.
+  const utilsSpinner = ora(
+    `Updating the utils.ts file for ${answers.name}...`,
+  ).start();
+  const utilsContent = buildUtils();
+  await fs.writeFile(join(templatePath, "lib", "utils.ts"), utilsContent);
+  utilsSpinner.succeed("✅ utils.ts successfully updated");
 }

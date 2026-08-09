@@ -37,37 +37,37 @@ interface ThemeVars {
   "--sidebar-ring": string;
 }
 
-function toOklchValues(hex: string): string {
-  const color = oklch(parse(hex));
-  if (!color) throw new Error(`Invalid hex: ${hex}`);
-  return `${formatNumber(color.l)} ${formatNumber(color.c)} ${formatNumber(color.h ?? 0)}`;
-}
-
-function getForeground(hex: string): string {
-  const color = oklch(parse(hex));
-  if (!color) throw new Error(`Invalid hex: ${hex}`);
-  return color.l > 0.6 ? "0.205 0 0" : "0.985 0 0";
-}
-
-function getRadius(radius: Theme["radius"]): string {
-  const defaultRem = "0.625rem";
-  switch (radius) {
-    case "None":
-      return "0rem";
-    case "Small":
-      return "0.45rem";
-    case "Default":
-      return defaultRem;
-    case "Medium":
-      return defaultRem;
-    case "Large":
-      return "0.875rem";
-    default:
-      return defaultRem;
-  }
-}
-
 export function createTheme(theme: Theme) {
+  function toOklchValues(hex: string): string {
+    const color = oklch(parse(hex));
+    if (!color) throw new Error(`Invalid hex: ${hex}`);
+    return `${formatNumber(color.l)} ${formatNumber(color.c)} ${formatNumber(color.h ?? 0)}`;
+  }
+
+  function getForeground(hex: string): string {
+    const color = oklch(parse(hex));
+    if (!color) throw new Error(`Invalid hex: ${hex}`);
+    return color.l > 0.6 ? "0.205 0 0" : "0.985 0 0";
+  }
+
+  function getRadius(radius: Theme["radius"]): string {
+    const defaultRem = "0.625rem";
+    switch (radius) {
+      case "None":
+        return "0rem";
+      case "Small":
+        return "0.45rem";
+      case "Default":
+        return defaultRem;
+      case "Medium":
+        return defaultRem;
+      case "Large":
+        return "0.875rem";
+      default:
+        return defaultRem;
+    }
+  }
+
   // Keep arguments as Hex code values for when users are able to choose these values.
   const lightBase = toOklchValues("#ffffff"); // oklch(1 0 0)
   const lightBaseFg = toOklchValues("#0a0a0a"); // oklch(0.145 0 0)

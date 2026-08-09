@@ -32,7 +32,7 @@ Then link the CLI commands globally on your machine:
 npm link
 ```
 
-After linking, `create-feast-app` and `update-feast-app` are available as terminal commands from anywhere.
+After linking, `npx create-feast-app` and `npx update-feast-app` are available as terminal commands from anywhere.
 
 ---
 
@@ -63,7 +63,7 @@ GOOGLE_FONTS_API_KEY=your-google-fonts-key
 Provisions a brand new FEAST client from scratch. Run this when onboarding a new restaurant.
 
 ```bash
-create-feast-app
+npx create-feast-app
 ```
 
 The tool walks through the following steps in order:
@@ -104,7 +104,7 @@ When complete, the tool outputs:
 Updates an existing FEAST client's Supabase record and regenerates their project files. Run this when a client's business info or theme has changed and the generated files need to reflect the update.
 
 ```bash
-update-feast-app
+npx update-feast-app
 ```
 
 Currently uses `exampleData.ts` as its data source (org ID + answers). Before running against a real client, update that file with the client's actual data.
