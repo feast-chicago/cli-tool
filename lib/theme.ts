@@ -207,7 +207,7 @@ export function generateCssVariables(
       .map(([k, v]) => `  ${k}: ${v};`)
       .join("\n");
 
-  const fontCss = `\n  --font-primary: "${createdTheme.primaryFont}";\n  --font-secondary: "${createdTheme.secondaryFont}";\n}`;
+  const fontCss = `\n  --font-primary: "${createdTheme.primaryFont.family}", ${createdTheme.primaryFont.category};\n  --font-secondary: "${createdTheme.secondaryFont.family}", ${createdTheme.secondaryFont.category};\n}`;
   const lightVars = `:root {\n${toVars(createdTheme.light)}${fontCss}`;
   const darkVars = `.dark {\n${toVars(createdTheme.dark)}${fontCss}`;
 

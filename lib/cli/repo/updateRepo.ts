@@ -4,7 +4,7 @@ import { join } from "path";
 import { Answers } from "../../../schema";
 import { buildConfig } from "../../../utils/buildConfig";
 import { buildUtils } from "../../../utils/buildUtils";
-import { fetchGoogleFonts, writeFonts } from "../../fonts";
+import { fetchGoogleFonts } from "../../fonts";
 import { createTheme, generateCssVariables } from "../../theme";
 
 export async function updateRepo(answers: Answers, orgId: string) {
@@ -48,19 +48,6 @@ export async function updateRepo(answers: Answers, orgId: string) {
     join(templatePath, "schema.ts"),
   );
   schemaSpinner.succeed("✅ schema.ts successfully updated");
-
-  // Create a fonts file for the custom selected Google Web Fonts to the new directory
-  const fontSpinner = ora(
-    `Updating the fonts file for ${answers.name}...`,
-  ).start();
-
-  await writeFonts(
-    templatePath,
-    answers.theme.primary_font,
-    answers.theme.secondary_font,
-    fontMap,
-  );
-  fontSpinner.succeed("✅ fonts.ts successfully updated");
 
   // Generate CSS variables from the user's preferences and write them to globals.css.
   const themeSpinner = ora(

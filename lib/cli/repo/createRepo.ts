@@ -2,12 +2,10 @@ import { execa } from "execa";
 import fs from "fs-extra";
 import ora from "ora";
 import { join } from "path";
-import { fontMap } from "../../../app-create";
 import { Answers } from "../../../schema";
 import { buildConfig } from "../../../utils/buildConfig";
-import { writeFonts } from "../../fonts";
-import { createTheme, generateCssVariables } from "../../theme";
 import { buildUtils } from "../../../utils/buildUtils";
+import { createTheme, generateCssVariables } from "../../theme";
 
 export async function createRepo(
   answers: Answers,
@@ -38,19 +36,6 @@ export async function createRepo(
   ).start();
   await fs.copy(join(process.cwd(), "schema.ts"), join(rootPath, "schema.ts"));
   schemaSpinner.succeed("✅ schema.ts successfully created");
-
-  // Create a fonts file for the custom selected Google Web Fonts to the new directory
-  const fontSpinner = ora(
-    `Creating a fonts file for ${answers.name}...`,
-  ).start();
-
-  await writeFonts(
-    rootPath,
-    answers.theme.primary_font,
-    answers.theme.secondary_font,
-    fontMap,
-  );
-  fontSpinner.succeed("✅ fonts.ts successfully created");
 
   // Generate CSS variables from the user's preferences and write them to globals.css.
   const themeSpinner = ora(

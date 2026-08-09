@@ -31,6 +31,39 @@ const SettingsSchema = z.object({
 
 const HexColorSchema = z.string().regex(/^#[0-9A-Fa-f]{6}$/);
 
+const GoogleFilesSchema = z.object({
+  "100": z.string().nullable(),
+  "200": z.string().nullable(),
+  "300": z.string().nullable(),
+  "500": z.string().nullable(),
+  "600": z.string().nullable(),
+  "700": z.string().nullable(),
+  "800": z.string().nullable(),
+  "900": z.string().nullable(),
+  regular: z.string().nullable(),
+  "100italic": z.string().nullable(),
+  "200italic": z.string().nullable(),
+  "300italic": z.string().nullable(),
+  italic: z.string().nullable(),
+  "500italic": z.string().nullable(),
+  "600italic": z.string().nullable(),
+  "700italic": z.string().nullable(),
+  "800italic": z.string().nullable(),
+  "900italic": z.string().nullable(),
+});
+
+const GoogleFontSchema = z.object({
+  family: z.string().min(1),
+  variants: z.array(z.string().min(1)),
+  subsets: z.array(z.string().min(1)),
+  version: z.string().min(1),
+  lastModified: z.string().min(1),
+  files: GoogleFilesSchema,
+  category: z.string().min(1),
+  kind: z.string().min(1),
+  menu: z.string().min(1),
+});
+
 const ThemeSchema = z.object({
   platform_theme: z.enum([
     "basic",
@@ -46,8 +79,8 @@ const ThemeSchema = z.object({
   ]),
   primary_brand_color: HexColorSchema,
   secondary_brand_color: HexColorSchema.nullable(),
-  primary_font: z.string().min(1),
-  secondary_font: z.string().nullable(),
+  primary_font: GoogleFontSchema,
+  secondary_font: GoogleFontSchema,
   radius: z.enum(["Default", "None", "Small", "Medium", "Large"]),
   is_dark_mode_enabled: z.boolean(),
 });
@@ -137,3 +170,4 @@ export type Business = z.infer<typeof BusinessSchema>;
 export type FeastConfig = z.infer<typeof ConfigSchema>;
 export type Settings = z.infer<typeof SettingsSchema>;
 export type Theme = z.infer<typeof ThemeSchema>;
+export type GoogleFont = z.infer<typeof GoogleFontSchema>;
