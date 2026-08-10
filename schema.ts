@@ -23,6 +23,7 @@ const SettingsSchema = z.object({
   is_group_ordering_enabled: z.boolean(),
   is_pos_enabled: z.boolean(),
   is_reservations_enabled: z.boolean(),
+  is_bill_splitting_enabled: z.boolean(),
   is_customer_accounts_enabled: z.boolean(),
   is_rewards_enabled: z.boolean(),
   is_shop_page_enabled: z.boolean(),

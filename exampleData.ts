@@ -108,6 +108,7 @@ const settings: Settings = {
   is_group_ordering_enabled: false,
   is_pos_enabled: false,
   is_reservations_enabled: false,
+  is_bill_splitting_enabled: false,
   is_customer_accounts_enabled: true,
   is_rewards_enabled: true,
   is_shop_page_enabled: false,
