@@ -164,6 +164,11 @@ export const ConfigSchema = z.object({
   description: z.string().nullable(),
 });
 
+export const BusinessMetadataSchema = z.object({
+  id: z.string(),
+  role: z.string(),
+});
+
 export type Address = z.infer<typeof AddressSchema>;
 export type Admin = z.infer<typeof AdminSchema>;
 export type Answers = z.infer<typeof AnswersSchema>;
@@ -172,3 +177,4 @@ export type FeastConfig = z.infer<typeof ConfigSchema>;
 export type Settings = z.infer<typeof SettingsSchema>;
 export type Theme = z.infer<typeof ThemeSchema>;
 export type GoogleFont = z.infer<typeof GoogleFontSchema>;
+export type BusinessMetadata = z.infer<typeof BusinessMetadataSchema>;

@@ -34,6 +34,7 @@ export async function updateRepo(answers: Answers, orgId: string) {
 
   // Copy the template to a new directory named after the business.
   const templatePath = join(process.cwd(), "../site-template");
+  const typesPath = join(process.cwd(), "../feast-works/types");
 
   // Update the config file with test data.
   const configSpinner = ora("Updating the config file...").start();
@@ -41,11 +42,18 @@ export async function updateRepo(answers: Answers, orgId: string) {
   await fs.writeFile(join(templatePath, "feast.config.ts"), configContent);
   configSpinner.succeed("✅ feast.config.ts successfully updated");
 
-  // Copy the schema file to the new directory
-  const schemaSpinner = ora("Updating the schema file...").start();
+  // Copy the schema file to the site-template and feast-works directories
+  const schemaSpinner = ora(
+    "Updating the schema and types-related files...",
+  ).start();
   await fs.copy(
     join(process.cwd(), "schema.ts"),
     join(templatePath, "schema.ts"),
+  );
+  await fs.copy(join(process.cwd(), "schema.ts"), join(typesPath, "feast.ts"));
+  await fs.copy(
+    join(process.cwd(), "clerk.d.ts"),
+    join(typesPath, "clerk.d.ts"),
   );
   schemaSpinner.succeed("✅ schema.ts successfully updated");
 

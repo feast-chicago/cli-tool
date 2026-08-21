@@ -37,13 +37,7 @@ export async function provisionClient(answers: Answers) {
       firstName: answers.admin.first_name,
       lastName: answers.admin.last_name,
       publicMetadata: {
-        businesses: [
-          {
-            id: org.id,
-            role: "owner",
-            permissions: [],
-          },
-        ],
+        businesses: [{ id: org.id, role: "admin" }],
       },
       privateMetadata: {
         isOnboardingComplete: false,
