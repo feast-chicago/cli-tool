@@ -7,7 +7,7 @@ interface GoogleFontsResponse {
 
 export async function fetchGoogleFonts(): Promise<Map<string, string>> {
   const apiKey = process.env.GOOGLE_WEB_FONTS_API_KEY;
-  if (!apiKey) throw new Error("Missing GOOGLE_WEB_FONTS_API_KEY in .env");
+  if (!apiKey) throw new Error("Missing Google Web Fonts API key.");
 
   const res = await fetch(
     `https://www.googleapis.com/webfonts/v1/webfonts?key=${apiKey}&sort=popularity`,
