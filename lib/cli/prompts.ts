@@ -791,6 +791,8 @@ export async function gatherAnswers() {
 
   const formattedTheme: Theme = {
     platform_theme: themeAnswers.platform_theme,
+    primary_logo_url: null,
+    secondary_logo_url: null,
     primary_brand_color: themeAnswers.primary_brand_color,
     secondary_brand_color: themeAnswers.secondary_brand_color,
     primary_font: JSON.parse(
@@ -799,6 +801,8 @@ export async function gatherAnswers() {
     secondary_font: JSON.parse(
       fontMap.get(themeAnswers.secondary_font) ?? JSON.stringify(InterFont),
     ),
+    letter_spacing: 0,
+    padding: 0.25,
     radius: themeAnswers.radius,
     is_dark_mode_enabled: themeAnswers.is_dark_mode_enabled,
   };

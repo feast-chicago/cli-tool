@@ -11,6 +11,7 @@ export async function createBusiness(answers: Answers, orgId: string) {
   const newBusiness: Business = {
     id: orgId,
     ...answers,
+    layout: [],
     created_at,
     updated_at: created_at,
   };

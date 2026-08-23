@@ -65,7 +65,7 @@ const GoogleFontSchema = z.object({
   menu: z.string().min(1),
 });
 
-const ThemeSchema = z.object({
+export const ThemeSchema = z.object({
   platform_theme: z.enum([
     "basic",
     // "minimalist",
@@ -78,10 +78,14 @@ const ThemeSchema = z.object({
     // "neighborhood",
     // "retro",
   ]),
+  primary_logo_url: z.string().nullable(),
+  secondary_logo_url: z.string().nullable(),
   primary_brand_color: HexColorSchema,
   secondary_brand_color: HexColorSchema.nullable(),
   primary_font: GoogleFontSchema,
   secondary_font: GoogleFontSchema,
+  letter_spacing: z.number(),
+  padding: z.number(),
   radius: z.enum(["Default", "None", "Small", "Medium", "Large"]),
   is_dark_mode_enabled: z.boolean(),
 });
@@ -117,11 +121,32 @@ export const ClerkProvisionSchema = z.object({
   businesses: z.array(z.string()).min(1),
 });
 
+export const PageComponentSchema = z.object({
+  id: z.string(), // unique instance id e.g. "hero-1"
+  type: z.enum([
+    "hero",
+    "menu",
+    "hours",
+    "gallery",
+    "testimonials",
+    "cta",
+    "map",
+    "about",
+    "catering",
+    "shop",
+  ]),
+  props: z.record(z.string(), z.unknown()).optional(), // Component-specific config
+  visible: z.boolean().default(true),
+});
+
+export const LayoutSchema = z.array(PageComponentSchema);
+
 export const BusinessSchema = AnswersSchema.extend({
   // info
   id: z.string().min(1),
   created_at: z.date(),
   updated_at: z.date(),
+  layout: LayoutSchema,
   // hours: z.object({
   //   mon: z.array(z.array(z.int())).nullable(),
   //   tue: z.array(z.array(z.int())).nullable(),
@@ -173,8 +198,10 @@ export type Address = z.infer<typeof AddressSchema>;
 export type Admin = z.infer<typeof AdminSchema>;
 export type Answers = z.infer<typeof AnswersSchema>;
 export type Business = z.infer<typeof BusinessSchema>;
+export type BusinessMetadata = z.infer<typeof BusinessMetadataSchema>;
 export type FeastConfig = z.infer<typeof ConfigSchema>;
+export type GoogleFont = z.infer<typeof GoogleFontSchema>;
+export type Layout = z.infer<typeof LayoutSchema>;
+export type PageComponent = z.infer<typeof PageComponentSchema>;
 export type Settings = z.infer<typeof SettingsSchema>;
 export type Theme = z.infer<typeof ThemeSchema>;
-export type GoogleFont = z.infer<typeof GoogleFontSchema>;
-export type BusinessMetadata = z.infer<typeof BusinessMetadataSchema>;

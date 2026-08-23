@@ -88,10 +88,14 @@ const billing_address = business_address;
 
 const theme: Theme = {
   platform_theme: "basic",
+  primary_logo_url: null,
+  secondary_logo_url: null,
   primary_brand_color: "#b5451b", // Terracotta
   secondary_brand_color: "#f5f5f5", // Dark: #262626
   primary_font: InterFont,
   secondary_font: InterFont,
+  letter_spacing: 0,
+  padding: 0.25,
   radius: "Default",
   is_dark_mode_enabled: false,
 };
