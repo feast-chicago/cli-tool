@@ -205,3 +205,9 @@ export type Layout = z.infer<typeof LayoutSchema>;
 export type PageComponent = z.infer<typeof PageComponentSchema>;
 export type Settings = z.infer<typeof SettingsSchema>;
 export type Theme = z.infer<typeof ThemeSchema>;
+
+export interface StorageItem {
+  id: string;
+  path: string;
+  fullPath: string;
+}
