@@ -847,6 +847,26 @@ export async function gatherAnswers() {
           hint: "Showcase your menu to customers.",
         },
         {
+          name: "is_shop_page_enabled",
+          message: "Shop page",
+          hint: "Showcase your catalog to customers.",
+        },
+        {
+          name: "is_catering_enabled",
+          message: "Catering page",
+          hint: "Expand the reach of your business with catering.",
+        },
+        {
+          name: "is_customer_accounts_enabled",
+          message: "Customers accounts",
+          hint: "Allow customers to create accounts.",
+        },
+        {
+          name: "is_rewards_enabled",
+          message: "Rewards",
+          hint: "Allow customers to earn rewards for their purchases. (Customers accounts required)",
+        },
+        {
           name: "is_online_ordering_enabled",
           message: "Online ordering",
           hint: "Allow customers to order ahead of time. (Menu page required)",
@@ -876,26 +896,6 @@ export async function gatherAnswers() {
           name: "is_bill_splitting_enabled",
           message: "Bill splitting",
           hint: "Allow customers in the same group or party to split their bill. (Reservations required)",
-        },
-        {
-          name: "is_customer_accounts_enabled",
-          message: "Customers accounts",
-          hint: "Allow customers to create accounts.",
-        },
-        {
-          name: "is_rewards_enabled",
-          message: "Rewards",
-          hint: "Allow customers to earn rewards for their purchases. (Customers accounts required)",
-        },
-        {
-          name: "is_shop_page_enabled",
-          message: "Shop page",
-          hint: "Showcase your catalog to customers.",
-        },
-        {
-          name: "is_catering_enabled",
-          message: "Catering page",
-          hint: "Expand the reach of your business with catering.",
         },
       ],
     },
