@@ -1,18 +1,30 @@
 import z from "zod";
 
-const AddressSchema = z.object({
+// Old Address Schema
+/* const AddressSchema = z.object({
   line_1: z.string().min(1),
   line_2: z.string().nullable(),
   city: z.string().min(1),
   state: z.string().min(1),
   zip_code: z.string().min(1),
   country: z.string().min(1),
+}); */
+
+const AddressSchema = z.object({
+  street_number: z.string().min(1),
+  street_name: z.string().min(1),
+  city: z.string().min(1),
+  state: z.string().min(1),
+  state_code: z.string().min(1),
+  zip_code: z.string().min(1),
+  country: z.string().min(1),
+  formatted_address: z.string().min(1),
 });
 
 const AdminSchema = z.object({
   first_name: z.string().min(1),
   last_name: z.string().min(1),
-  phone: z.string().min(1),
+  phone: z.number().int().positive(),
   email: z.email(),
 });
 
@@ -95,7 +107,7 @@ export const AnswersSchema = z.object({
   name: z.string().min(1),
   tagline: z.string().nullable(),
   description: z.string().nullable(),
-  phone: z.string().min(1),
+  phone: z.number().int().positive(),
   email: z.email(),
   category: z.enum([
     "Restaurant",
@@ -106,7 +118,7 @@ export const AnswersSchema = z.object({
     "Other",
   ]),
   location_type: z.enum(["brick-and-mortar", "mobile", "hybrid", "multi-unit"]),
-  business_address: AddressSchema,
+  business_address: z.array(AddressSchema),
   billing_address: AddressSchema,
   theme: ThemeSchema,
   admin: AdminSchema,

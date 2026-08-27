@@ -1,7 +1,67 @@
 import pkg from "enquirer";
 import { exmampleAnswers, InterFont } from "../../exampleData";
-import { AnswersSchema, Settings, Theme } from "../../schema";
+import { Address, AnswersSchema, Settings, Theme } from "../../schema";
 import { fetchGoogleFonts } from "../fonts";
+
+const states = new Map([
+  ["Alabama", "AL"],
+  ["Alaska", "AK"],
+  ["Arizona", "AZ"],
+  ["Arkansas", "AR"],
+  ["American Samoa", "AS"],
+  ["California", "CA"],
+  ["Colorado", "CO"],
+  ["Connecticut", "CT"],
+  ["Delaware", "DE"],
+  ["District of Columbia", "DC"],
+  ["Florida", "FL"],
+  ["Georgia", "GA"],
+  ["Guam", "GU"],
+  ["Hawaii", "HI"],
+  ["Idaho", "ID"],
+  ["Illinois", "IL"],
+  ["Indiana", "IN"],
+  ["Iowa", "IA"],
+  ["Kansas", "KS"],
+  ["Kentucky", "KY"],
+  ["Louisiana", "LA"],
+  ["Maine", "ME"],
+  ["Maryland", "MD"],
+  ["Massachusetts", "MA"],
+  ["Michigan", "MI"],
+  ["Minnesota", "MN"],
+  ["Mississippi", "MS"],
+  ["Missouri", "MO"],
+  ["Montana", "MT"],
+  ["Nebraska", "NE"],
+  ["Nevada", "NV"],
+  ["New Hampshire", "NH"],
+  ["New Jersey", "NJ"],
+  ["New Mexico", "NM"],
+  ["New York", "NY"],
+  ["North Carolina", "NC"],
+  ["North Dakota", "ND"],
+  ["Northern Mariana Islands", "MP"],
+  ["Ohio", "OH"],
+  ["Oklahoma", "OK"],
+  ["Oregon", "OR"],
+  ["Pennsylvania", "PA"],
+  ["Puerto Rico", "PR"],
+  ["Rhode Island", "RI"],
+  ["South Carolina", "SC"],
+  ["South Dakota", "SD"],
+  ["Tennessee", "TN"],
+  ["Texas", "TX"],
+  ["Trust Territories", "TT"],
+  ["Utah", "UT"],
+  ["Vermont", "VT"],
+  ["Virginia", "VA"],
+  ["Virgin Islands", "VI"],
+  ["Washington", "WA"],
+  ["West Virginia", "WV"],
+  ["Wisconsin", "WI"],
+  ["Wyoming", "WY"],
+]);
 
 export async function gatherAnswers() {
   const { prompt } = pkg;
@@ -568,7 +628,16 @@ export async function gatherAnswers() {
     theme,
     admin,
   } = exmampleAnswers;
-  const { line_1, line_2, city, zip_code, country } = business_address;
+  const {
+    street_number,
+    street_name,
+    city,
+    state,
+    state_code,
+    zip_code,
+    country,
+    formatted_address,
+  } = business_address[0];
   const { primary_brand_color, secondary_brand_color } = theme;
   const { first_name, last_name } = admin;
 
@@ -592,10 +661,17 @@ export async function gatherAnswers() {
       initial: description,
     },
     {
-      type: "input",
+      type: "number",
       name: "phone",
       message: "Business phone?",
       initial: phone,
+      // TODO: Fix the validation.
+      // validate: (value) =>
+      //   parseInt(value) >= 10000000000 &&
+      //   parseInt(value) >= 19999999999 &&
+      //   Number.isInteger(parseInt(value))
+      //     ? true
+      //     : "Must be a valid phone number",
     },
     {
       type: "input",
@@ -620,15 +696,15 @@ export async function gatherAnswers() {
   const businessAddressAnswers = (await prompt([
     {
       type: "input",
-      name: "line_1",
-      message: "Business address line 1?",
-      initial: line_1,
+      name: "street_number",
+      message: "Business address street number?",
+      initial: street_number,
     },
     {
       type: "input",
-      name: "line_2",
-      message: "Business address line 2?",
-      initial: line_2,
+      name: "street_name",
+      message: "Business address street name?",
+      initial: street_name,
     },
     {
       type: "input",
@@ -641,8 +717,8 @@ export async function gatherAnswers() {
       name: "state",
       message: "Business address state?",
       choices: [
-        "IL",
-        // "IN",
+        "Illinois",
+        // "Indiana",
       ],
     },
     {
@@ -658,8 +734,8 @@ export async function gatherAnswers() {
       initial: country,
     },
   ])) as {
-    line_1: string;
-    line_2: string | null;
+    street_number: string;
+    street_name: string;
     city: string;
     state: string;
     zip_code: string;
@@ -680,23 +756,23 @@ export async function gatherAnswers() {
 
   const billingAddressAnswers = is_billing_same_as_business
     ? {
-        line_1: businessAddressAnswers.line_1,
-        line_2: businessAddressAnswers.line_2,
+        street_number: businessAddressAnswers.street_number,
+        street_name: businessAddressAnswers.street_name,
         city: businessAddressAnswers.city,
         state: businessAddressAnswers.state,
         zip_code: businessAddressAnswers.zip_code,
         country: businessAddressAnswers.country,
       }
-    : await prompt([
+    : ((await prompt([
         {
           type: "input",
-          name: "line_1",
-          message: "Billing address line 1?",
+          name: "street_number",
+          message: "Billing address street number?",
         },
         {
           type: "input",
-          name: "line_2",
-          message: "Billing address line 2?",
+          name: "street_name",
+          message: "Billing address street name?",
         },
         {
           type: "input",
@@ -704,9 +780,13 @@ export async function gatherAnswers() {
           message: "Billing address city?",
         },
         {
-          type: "input",
+          type: "select",
           name: "state",
           message: "Billing address state?",
+          choices: [
+            "Illinois",
+            // "Indiana",
+          ],
         },
         {
           type: "input",
@@ -717,9 +797,15 @@ export async function gatherAnswers() {
           type: "input",
           name: "country",
           message: "Billing address country?",
-          initial: "USA",
         },
-      ]);
+      ])) as {
+        street_number: string;
+        street_name: string;
+        city: string;
+        state: string;
+        zip_code: string;
+        country: string;
+      });
 
   type ThemeAnswers = {
     platform_theme: typeof theme.platform_theme;
@@ -807,6 +893,29 @@ export async function gatherAnswers() {
     is_dark_mode_enabled: themeAnswers.is_dark_mode_enabled,
   };
 
+  const formattedBusinessAddress: Address[] = [
+    {
+      street_number: businessAddressAnswers.street_number,
+      street_name: businessAddressAnswers.street_name,
+      city: businessAddressAnswers.city,
+      state: businessAddressAnswers.state,
+      state_code: states.get(businessAddressAnswers.state) ?? "N/A",
+      zip_code: businessAddressAnswers.zip_code,
+      country: "United States",
+      formatted_address: `${businessAddressAnswers.street_number} ${businessAddressAnswers.street_name}, ${businessAddressAnswers.city}, ${states.get(businessAddressAnswers.state) ?? "N/A"}, USA`,
+    },
+  ];
+  const formattedBillingAddress: Address = {
+    street_number: billingAddressAnswers.street_number,
+    street_name: billingAddressAnswers.street_name,
+    city: billingAddressAnswers.city,
+    state: billingAddressAnswers.state,
+    state_code: states.get(billingAddressAnswers.state) ?? "N/A",
+    zip_code: billingAddressAnswers.zip_code,
+    country: "United States",
+    formatted_address: `${billingAddressAnswers.street_number} ${billingAddressAnswers.street_name}, ${billingAddressAnswers.city}, ${states.get(billingAddressAnswers.state) ?? "N/A"}, USA`,
+  };
+
   const adminAnswers = await prompt([
     {
       type: "input",
@@ -821,10 +930,17 @@ export async function gatherAnswers() {
       initial: last_name,
     },
     {
-      type: "input",
+      type: "number",
       name: "phone",
       message: "Admin phone?",
       initial: admin.phone,
+      // TODO: Fix the validation.
+      // validate: (value) =>
+      //   parseInt(value) >= 10000000000 &&
+      //   parseInt(value) >= 19999999999 &&
+      //   Number.isInteger(parseInt(value))
+      //     ? true
+      //     : "Must be a valid phone number",
     },
     {
       type: "input",
@@ -930,8 +1046,8 @@ export async function gatherAnswers() {
 
   const answers = AnswersSchema.parse({
     ...businessIdentityAnswers,
-    business_address: { ...businessAddressAnswers },
-    billing_address: { ...billingAddressAnswers },
+    business_address: formattedBusinessAddress,
+    billing_address: formattedBillingAddress,
     theme: formattedTheme,
     admin: { ...adminAnswers },
     settings,

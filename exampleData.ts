@@ -76,15 +76,19 @@ export const InterFont: GoogleFont = {
   menu: "https://fonts.gstatic.com/s/inter/v20/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZlhjQ.ttf",
 };
 
-const business_address: Address = {
-  line_1: "123 N Main St",
-  line_2: "",
-  city: "Chicago",
-  state: "IL",
-  zip_code: "60600",
-  country: "USA",
-};
-const billing_address = business_address;
+const business_address: Address[] = [
+  {
+    street_number: "123",
+    street_name: "North Main Street",
+    city: "Chicago",
+    state: "Illinois",
+    state_code: "IL",
+    zip_code: "60600",
+    country: "United States",
+    formatted_address: "123 North Main Street, Chicago, IL 60600, USA",
+  },
+];
+const billing_address = business_address[0];
 
 const theme: Theme = {
   platform_theme: "basic",
@@ -102,7 +106,7 @@ const theme: Theme = {
 const admin: Admin = {
   first_name: "John",
   last_name: "Doe",
-  phone: "7735550100",
+  phone: 17735550100,
   email: "john@test.com",
 };
 const settings: Settings = {
@@ -125,7 +129,7 @@ export const exmampleAnswers: Answers = {
   tagline: "An example tagline.",
   description:
     "Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus.",
-  phone: "3125550100",
+  phone: 13125550100,
   email: "test@example.com",
   category: "Restaurant",
   location_type: "brick-and-mortar",
