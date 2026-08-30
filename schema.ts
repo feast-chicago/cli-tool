@@ -1,15 +1,5 @@
 import z from "zod";
 
-// Old Address Schema
-/* const AddressSchema = z.object({
-  line_1: z.string().min(1),
-  line_2: z.string().nullable(),
-  city: z.string().min(1),
-  state: z.string().min(1),
-  zip_code: z.string().min(1),
-  country: z.string().min(1),
-}); */
-
 const AddressSchema = z.object({
   street_number: z.string().min(1),
   street_name: z.string().min(1),
@@ -133,32 +123,205 @@ export const ClerkProvisionSchema = z.object({
   businesses: z.array(z.string()).min(1),
 });
 
+// ——————————————— LAYOUT COMPONENTS ———————————————
+
+const AlignmentSchema = z.enum(["left", "center", "right"]).default("left");
+
+const ButtonPropsSchema = z.object({
+  label: z.string().min(1),
+  href: z.string().nullable(),
+  openInNewTab: z.boolean().default(true).nullable(),
+  action: z.function().nullable(),
+  variant: z
+    .enum(["default", "outline", "secondary", "ghost", "destructive", "link"])
+    .default("default"),
+});
+
+const DividerPropsSchema = z.object({
+  style: z.enum(["line", "dots", "blank"]).default("line"),
+  spacing: z.enum(["sm", "md", "lg"]).default("md"),
+});
+
+const HoursPropsSchema = z.object({
+  heading: z.string().default("Hours"),
+  showMap: z.boolean().default(true),
+  showPhone: z.boolean().default(true),
+  showEmail: z.boolean().default(false),
+  layout: z.enum(["vertical", "horizontal"]).default("vertical"),
+});
+
+const ImagePropsSchema = z.object({
+  url: z.url().nullable(),
+  alt: z.string().default(""),
+  fit: z.enum(["cover", "contain"]).default("cover"),
+  caption: z.string().nullable(),
+  maxWidth: z.enum(["sm", "md", "lg", "full"]).default("full"),
+});
+
+const LinkPropsSchema = z.object({
+  label: z.string().min(1),
+  href: z.string().min(1),
+  openInNewTab: z.boolean().default(false),
+});
+
+const LogoPropsSchema = z.object({
+  type: z.enum(["square", "header"]),
+  maxWidth: z.enum(["sm", "md", "lg", "full"]).default("full"),
+});
+
+const MapPropsSchema = z.object({
+  heading: z.string().default("Find us"),
+  height: z.enum(["sm", "md", "lg"]).default("md"),
+  // lat/lng pulled from business address in Supabase at runtime
+});
+
+const ReviewsPropsSchema = z.object({
+  heading: z.string().default("Reviews"),
+  displayStyle: z.enum(["grid", "list", "carousel"]).default("grid"),
+});
+
+const SocialMediaHandlePropsSchema = z.object({
+  platform: z.enum(["Facebook", "Google", "Instagram", "X", "Yelp"]).nullable(),
+  username: z.string().nullable(),
+});
+
+const TextPropsSchema = z.object({
+  heading: z.string().nullable(),
+  headingSize: z.enum(["h1", "h2", "h3"]).default("h2"),
+  body: z.string().nullable(),
+  button: ButtonPropsSchema.nullable(),
+  link: LinkPropsSchema.nullable(),
+  // buttons: z.array(ButtonPropsSchema), // TODO
+  // links: z.array(LinkPropsSchema), // TODO
+  backgroundStyle: z
+    .enum(["primary", "secondary", "muted", "transparent"])
+    .default("primary"),
+  alignment: AlignmentSchema,
+});
+
+export type ButtonProps = z.infer<typeof ButtonPropsSchema>;
+export type DividerProps = z.infer<typeof DividerPropsSchema>;
+export type HoursProps = z.infer<typeof HoursPropsSchema>;
+export type ImageProps = z.infer<typeof ImagePropsSchema>;
+export type LinkProps = z.infer<typeof LinkPropsSchema>;
+export type LogoProps = z.infer<typeof LogoPropsSchema>;
+export type MapProps = z.infer<typeof MapPropsSchema>;
+export type SocialMediaHandleProps = z.infer<
+  typeof SocialMediaHandlePropsSchema
+>;
+export type TextProps = z.infer<typeof TextPropsSchema>;
+export type ReviewsProps = z.infer<typeof ReviewsPropsSchema>;
+
+// ——————————————————————————————————————————————————
+
 export const PageComponentSchema = z.object({
-  id: z.string(), // unique instance id e.g. "hero-1"
+  id: z.string(),
   type: z.enum([
-    "hero",
-    "menu",
+    "button",
+    "divider",
     "hours",
-    "gallery",
-    "testimonials",
-    "cta",
+    "image",
+    "link",
+    "logo",
     "map",
-    "about",
-    "catering",
-    "shop",
+    "reviews",
+    "social",
+    "text",
   ]),
   props: z.record(z.string(), z.unknown()).optional(), // Component-specific config
   visible: z.boolean().default(true),
 });
+// Default props for each component type, used when adding a new component.
+const defaultButtonProps: ButtonProps = {
+  label: "Button",
+  href: null,
+  openInNewTab: null,
+  action: null,
+  variant: "default",
+};
+const defaultDividerProps: DividerProps = { style: "line", spacing: "md" };
+const defaultHoursProps: HoursProps = {
+  heading: "Hours",
+  showMap: false,
+  showPhone: false,
+  showEmail: false,
+  layout: "vertical",
+};
+const defaultImageProps: ImageProps = {
+  url: null,
+  alt: "Image",
+  fit: "contain",
+  caption: null,
+  maxWidth: "full",
+};
+const defaultLinkProps: LinkProps = {
+  label: "Link",
+  href: "/",
+  openInNewTab: false,
+};
+const defaultLogoProps: LogoProps = { type: "square", maxWidth: "md" };
+const defaultMapProps: MapProps = { heading: "Our Location", height: "md" };
+const defaultSocialMediaHandleProps: SocialMediaHandleProps = {
+  platform: null,
+  username: null,
+};
+const defaultTextProps: TextProps = {
+  heading: null,
+  headingSize: "h2",
+  body: null,
+  button: null,
+  link: null,
+  backgroundStyle: "transparent",
+  alignment: "left",
+};
+const defaultReviewsProps: ReviewsProps = {
+  heading: "Reviews",
+  displayStyle: "grid",
+};
 
-export const LayoutSchema = z.array(PageComponentSchema);
+export const DEFAULT_PROPS: Record<PageComponent["type"], unknown> = {
+  button: defaultButtonProps,
+  divider: defaultDividerProps,
+  hours: defaultHoursProps,
+  image: defaultImageProps,
+  link: defaultLinkProps,
+  logo: defaultLogoProps,
+  map: defaultMapProps,
+  reviews: defaultReviewsProps,
+  text: defaultTextProps,
+  social: defaultSocialMediaHandleProps,
+};
+
+export const PAGE_KEYS = [
+  "home",
+  "about",
+  "menu",
+  "shop",
+  "gallery",
+  "catering",
+] as const;
+export type PageKey = (typeof PAGE_KEYS)[number];
+
+export const PageLayoutSchema = z.array(PageComponentSchema);
+export const SiteLayoutSchema = z.object({
+  home: PageLayoutSchema.default([]),
+  about: PageLayoutSchema.default([]),
+  menu: PageLayoutSchema.default([]),
+  shop: PageLayoutSchema.default([]),
+  gallery: PageLayoutSchema.default([]),
+  catering: PageLayoutSchema.default([]),
+});
+
+export type PageComponent = z.infer<typeof PageComponentSchema>;
+export type PageLayout = z.infer<typeof PageLayoutSchema>;
+export type SiteLayout = z.infer<typeof SiteLayoutSchema>;
 
 export const BusinessSchema = AnswersSchema.extend({
   // info
   id: z.string().min(1),
   created_at: z.date(),
   updated_at: z.date(),
-  layout: LayoutSchema,
+  layout: SiteLayoutSchema,
   // hours: z.object({
   //   mon: z.array(z.array(z.int())).nullable(),
   //   tue: z.array(z.array(z.int())).nullable(),
@@ -172,9 +335,6 @@ export const BusinessSchema = AnswersSchema.extend({
   // seo_description: z.string(),
   // keywords: z.array(z.string()),
   // features
-  // has_online_orders: z.boolean(),
-  // has_public_menu: z.boolean(),
-  // has_reservations: z.boolean(),
   // integrations
   // analyticsId: z.string().nullable(),
   // facebookUsername: z.string().nullable(),
@@ -213,8 +373,7 @@ export type Business = z.infer<typeof BusinessSchema>;
 export type BusinessMetadata = z.infer<typeof BusinessMetadataSchema>;
 export type FeastConfig = z.infer<typeof ConfigSchema>;
 export type GoogleFont = z.infer<typeof GoogleFontSchema>;
-export type Layout = z.infer<typeof LayoutSchema>;
-export type PageComponent = z.infer<typeof PageComponentSchema>;
+
 export type Settings = z.infer<typeof SettingsSchema>;
 export type Theme = z.infer<typeof ThemeSchema>;
 

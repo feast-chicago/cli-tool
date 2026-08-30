@@ -1,5 +1,5 @@
 import ora from "ora";
-import { Answers, Business } from "../../schema";
+import { Answers, Business, SiteLayout } from "../../schema";
 import { supabase } from "../supabase";
 
 export async function createBusiness(answers: Answers, orgId: string) {
@@ -8,10 +8,18 @@ export async function createBusiness(answers: Answers, orgId: string) {
   ).start();
 
   const created_at = new Date();
+  const layout: SiteLayout = {
+    home: [],
+    about: [],
+    menu: [],
+    shop: [],
+    gallery: [],
+    catering: [],
+  };
   const newBusiness: Business = {
     id: orgId,
     ...answers,
-    layout: [],
+    layout,
     created_at,
     updated_at: created_at,
   };
@@ -38,7 +46,10 @@ export async function updateBusiness(answers: Answers, orgId: string) {
   const updated_at = new Date();
   const { data, error } = await supabase()
     .from("businesses")
-    .update({ ...answers, updated_at })
+    .update({
+      ...answers,
+      updated_at,
+    })
     .eq("id", orgId)
     .select()
     .single();
