@@ -127,9 +127,9 @@ cli-tool/
       clerk.ts          Clerk org + user provisioning
       prompts.ts        All enquirer prompt sequences
       supabase.ts       Supabase seed + update functions
-      repo/
-        createRepo.ts   Template copy, config/CSS/font generation
-        updateRepo.ts   Regenerates config/CSS/font in existing project
+      repo.ts
+        createRepo      Template copy, config/CSS/font generation
+        updateRepo      Regenerates config/CSS/font in existing project
   utils/
     math.ts             Number formatting helpers (used in oklch calculations)
   app-create.ts         Entry point for create-feast-app

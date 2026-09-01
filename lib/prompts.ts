@@ -1,7 +1,7 @@
 import pkg from "enquirer";
-import { exmampleAnswers, InterFont } from "../../exampleData";
-import { Address, AnswersSchema, Settings, Theme } from "../../schema";
-import { fetchGoogleFonts } from "../fonts";
+import { exmampleAnswers, InterFont } from "../exampleData";
+import { Address, AnswersSchema, Settings, Theme } from "../schema";
+import { fetchGoogleFonts } from "./fonts";
 
 const states = new Map([
   ["Alabama", "AL"],
