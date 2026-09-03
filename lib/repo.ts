@@ -40,3 +40,36 @@ export async function updateRepo(answers: Answers, orgId: string) {
   await fs.writeFile(join(templatePath, "lib", "utils.ts"), utilsContent);
   utilsSpinner.succeed("✅ utils.ts successfully updated");
 }
+
+export async function addDomain(slug: string) {
+  const domain = `${slug}.${process.env.FEAST_DOMAIN!}`;
+  const teamId = process.env.VERCEL_TEAM_ID!;
+  const token = process.env.VERCEL_TOKEN!;
+  const projectId = process.env.VERCEL_PROJECT_ID!;
+
+  // Add subdomain to Vercel project
+  const domainSpinner = ora(`Adding domain: ${domain}...`).start();
+  const siteUrl = `https://${domain}`;
+  try {
+    const res = await fetch(
+      `https://api.vercel.com/v10/projects/${projectId}/domains?teamId=${teamId}&slug=${slug}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: domain }),
+      },
+    );
+
+    if (!res.ok) {
+      throw new Error(`❌ Error ${res.status}: Failed to add domain`);
+    }
+
+    domainSpinner.succeed(`✅ Domain successfully configured: ${siteUrl}`);
+  } catch (err) {
+    domainSpinner.fail("❌ Domain configuration failed");
+    throw err;
+  }
+}

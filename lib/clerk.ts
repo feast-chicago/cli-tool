@@ -55,6 +55,7 @@ export async function provisionClient(answers: Answers) {
       userEmail: user.emailAddresses[0].emailAddress,
       orgId: org.id,
       password,
+      slug,
     };
   } catch (err) {
     clerkSpinner.fail("❌ Clerk provisioning failed");

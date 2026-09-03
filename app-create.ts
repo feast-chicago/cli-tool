@@ -6,6 +6,7 @@ import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { provisionClient } from "./lib/clerk";
 import { gatherAnswers } from "./lib/prompts";
+import { addDomain } from "./lib/repo";
 import { createBusiness } from "./lib/supabase";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -18,13 +19,16 @@ console.log(chalk.bold.hex("#fd6f3b")("\nFEAST App CLI Tool\n"));
 export const { answers, fontMap } = await gatherAnswers();
 
 // 2. Provision Clerk org and user.
-const { userEmail, password, orgId } = await provisionClient(answers);
+const { userEmail, password, orgId, slug } = await provisionClient(answers);
 
 // 3. Seed Supabase with business info.
 await createBusiness(answers, orgId);
 
+// 4. Add subdomain to Vercel project.
+await addDomain(slug);
+
 // Output next steps for the user.
-console.log(chalk.green(`\n  Done! Your site is now live.`));
+console.log(chalk.green(`\n  Done! Your site will be live shortly.`));
 console.log(chalk.green(`  Website Link: ${answers.site_urls[0]}\n`));
 
 console.log(
