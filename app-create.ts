@@ -6,7 +6,6 @@ import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { provisionClient } from "./lib/clerk";
 import { gatherAnswers } from "./lib/prompts";
-import { createRepo, deployRepo } from "./lib/repo";
 import { createBusiness } from "./lib/supabase";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -19,33 +18,17 @@ console.log(chalk.bold.hex("#fd6f3b")("\nFEAST App CLI Tool\n"));
 export const { answers, fontMap } = await gatherAnswers();
 
 // 2. Provision Clerk org and user.
-const { userEmail, password, orgId, slug } = await provisionClient(answers);
+const { userEmail, password, orgId } = await provisionClient(answers);
 
 // 3. Seed Supabase with business info.
 await createBusiness(answers, orgId);
 
-// 4. Copy the template to a new directory.
-const { rootPath } = await createRepo(answers, orgId, slug);
-
-// 5. Deploy site to GitHub/Vercel.
-const { repoUrl, siteUrl } = await deployRepo(answers.name, rootPath, slug);
-
 // Output next steps for the user.
-console.log(chalk.green(`\n  Done! Your project is ready at ${rootPath}\n`));
-console.log(chalk.blue(`  GitHub Link:  ${repoUrl}`));
-console.log(chalk.blue(`  Site Link:    ${siteUrl}`));
-console.log(
-  chalk.blue(
-    "  Note: Your website make take up to a few minutes to be fully online.\n",
-  ),
-);
+console.log(chalk.green(`\n  Done! Your site is now live.`));
+console.log(chalk.green(`  Website Link: ${answers.site_urls[0]}\n`));
+
 console.log(
   chalk.yellow(
-    `  Your FEAST Works account credentials:\n  Email Address:     ${userEmail}:\n  Temporary Password: ${password}`,
-  ),
-);
-console.log(
-  chalk.white(
-    `  Use the following commands to get started:\n  cd ${rootPath} && npm run dev\n`,
+    `  Your FEAST Works account credentials:\n  Email Address:      ${userEmail}:\n  Temporary Password: ${password}`,
   ),
 );

@@ -99,6 +99,8 @@ export const AnswersSchema = z.object({
   description: z.string().nullable(),
   phone: z.number().int().positive(),
   email: z.email(),
+  slug: z.string().min(1),
+  site_urls: z.array(z.string()),
   category: z.enum([
     "Restaurant",
     "Cafe",

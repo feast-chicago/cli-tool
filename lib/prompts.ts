@@ -1,6 +1,7 @@
 import pkg from "enquirer";
 import { exmampleAnswers, InterFont } from "../exampleData";
 import { Address, AnswersSchema, Settings, Theme } from "../schema";
+import { createSlug } from "../utils/slug";
 import { fetchGoogleFonts } from "./fonts";
 
 const states = new Map([
@@ -628,20 +629,12 @@ export async function gatherAnswers() {
     theme,
     admin,
   } = exmampleAnswers;
-  const {
-    street_number,
-    street_name,
-    city,
-    state,
-    state_code,
-    zip_code,
-    country,
-    formatted_address,
-  } = business_address[0];
+  const { street_number, street_name, city, zip_code, country } =
+    business_address[0];
   const { primary_brand_color, secondary_brand_color } = theme;
   const { first_name, last_name } = admin;
 
-  const businessIdentityAnswers = await prompt([
+  const businessIdentityAnswers = (await prompt([
     {
       type: "input",
       name: "name",
@@ -691,7 +684,15 @@ export async function gatherAnswers() {
       message: "Location type?",
       choices: ["brick-and-mortar", "mobile", "hybrid", "multi-unit"],
     },
-  ]);
+  ])) as {
+    name: string;
+    tagline: string;
+    description: string;
+    phone: string;
+    email: string;
+    category: string;
+    location_type: string;
+  };
 
   const businessAddressAnswers = (await prompt([
     {
@@ -1044,8 +1045,11 @@ export async function gatherAnswers() {
     is_catering_enabled: selectedSettings.includes("is_catering_enabled"),
   };
 
+  const slug = createSlug(businessIdentityAnswers.name);
   const answers = AnswersSchema.parse({
     ...businessIdentityAnswers,
+    slug,
+    site_urls: [`https://${slug}.eatfea.st`],
     business_address: formattedBusinessAddress,
     billing_address: formattedBillingAddress,
     theme: formattedTheme,

@@ -3,13 +3,12 @@ import "@dotenvx/dotenvx/config";
 import generator from "generate-password";
 import ora from "ora";
 import { Answers } from "../schema";
-import { createSlug } from "../utils/slug";
 
 export async function provisionClient(answers: Answers) {
   const clerk = createClerkClient({
     secretKey: process.env.CLERK_SECRET_KEY!,
   });
-  const slug = createSlug(answers.name);
+  const { name, slug } = answers;
   const password = generator.generate({
     length: 8,
     numbers: true,
@@ -19,15 +18,12 @@ export async function provisionClient(answers: Answers) {
   });
 
   const clerkSpinner = ora(
-    `Provisioning Clerk with ${answers.name}'${answers.name[answers.name.length - 1] === "s" ? "" : "s"} information..`,
+    `Provisioning Clerk with ${name}'${name[name.length - 1] === "s" ? "" : "s"} information..`,
   ).start();
 
   try {
     // 1. Create the org first so we have its ID for user metadata
-    const org = await clerk.organizations.createOrganization({
-      name: answers.name,
-      slug,
-    });
+    const org = await clerk.organizations.createOrganization({ name, slug });
 
     // 2. Create the user with org ID already baked into metadata
     // TODO: Prompt should ask if it's for an existing user (just ask email) or new user (ask name, email, password)
@@ -59,7 +55,6 @@ export async function provisionClient(answers: Answers) {
       userEmail: user.emailAddresses[0].emailAddress,
       orgId: org.id,
       password,
-      slug,
     };
   } catch (err) {
     clerkSpinner.fail("❌ Clerk provisioning failed");

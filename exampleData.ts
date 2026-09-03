@@ -131,6 +131,8 @@ export const exmampleAnswers: Answers = {
     "Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus.",
   phone: 13125550100,
   email: "test@example.com",
+  slug: "demo",
+  site_urls: ["https://demo.eatfea.st"],
   category: "Restaurant",
   location_type: "brick-and-mortar",
   business_address,
