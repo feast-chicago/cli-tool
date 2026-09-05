@@ -189,7 +189,7 @@ const SocialMediaHandlePropsSchema = z.object({
 
 const TextPropsSchema = z.object({
   heading: z.string().nullable(),
-  headingSize: z.enum(["h1", "h2", "h3"]).default("h2"),
+  headingSize: z.enum(["h1", "h2", "h3", "h4", "h5", "h6", "p"]),
   body: z.string().nullable(),
   button: ButtonPropsSchema.nullable(),
   link: LinkPropsSchema.nullable(),
@@ -221,6 +221,7 @@ export const PageComponentSchema = z.object({
   type: z.enum([
     "button",
     "divider",
+    "header",
     "hours",
     "image",
     "link",
@@ -231,7 +232,7 @@ export const PageComponentSchema = z.object({
     "text",
   ]),
   props: z.record(z.string(), z.unknown()).optional(), // Component-specific config
-  visible: z.boolean().default(true),
+  isVisible: z.boolean().default(true),
 });
 // Default props for each component type, used when adding a new component.
 const defaultButtonProps: ButtonProps = {
@@ -242,6 +243,15 @@ const defaultButtonProps: ButtonProps = {
   variant: "default",
 };
 const defaultDividerProps: DividerProps = { style: "line", spacing: "md" };
+const defaultHeaderProps: TextProps = {
+  heading: null,
+  headingSize: "h1",
+  body: null,
+  button: null,
+  link: null,
+  backgroundStyle: "transparent",
+  alignment: "left",
+};
 const defaultHoursProps: HoursProps = {
   heading: "Hours",
   showMap: false,
@@ -269,7 +279,7 @@ const defaultSocialMediaHandleProps: SocialMediaHandleProps = {
 };
 const defaultTextProps: TextProps = {
   heading: null,
-  headingSize: "h2",
+  headingSize: "p",
   body: null,
   button: null,
   link: null,
@@ -284,6 +294,7 @@ const defaultReviewsProps: ReviewsProps = {
 export const DEFAULT_PROPS: Record<PageComponent["type"], unknown> = {
   button: defaultButtonProps,
   divider: defaultDividerProps,
+  header: defaultHeaderProps,
   hours: defaultHoursProps,
   image: defaultImageProps,
   link: defaultLinkProps,

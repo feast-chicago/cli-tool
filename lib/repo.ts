@@ -8,16 +8,10 @@ import { buildUtils } from "../utils/buildUtils";
 
 export async function updateRepo(answers: Answers, orgId: string) {
   // Copy the template to a new directory named after the business.
-  const templatePath = join(process.cwd(), "../site-template");
+  const templatePath = join(process.cwd(), "../client-site");
   const typesPath = join(process.cwd(), "../feast-works/types");
 
-  // Update the config file with test data.
-  const configSpinner = ora("Updating the config file...").start();
-  const configContent = buildConfig(answers, orgId);
-  await fs.writeFile(join(templatePath, "feast.config.ts"), configContent);
-  configSpinner.succeed("✅ feast.config.ts successfully updated");
-
-  // Copy the schema file to the site-template and feast-works directories
+  // Copy the schema file to the client-site and feast-works directories
   const schemaSpinner = ora(
     "Updating the schema and types-related files...",
   ).start();
