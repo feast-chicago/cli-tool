@@ -3,26 +3,27 @@ import fs from "fs-extra";
 import ora from "ora";
 import { join } from "path";
 import { Answers } from "../schema";
-import { buildConfig } from "../utils/buildConfig";
 import { buildUtils } from "../utils/buildUtils";
 
-export async function updateRepo(answers: Answers, orgId: string) {
-  // Copy the template to a new directory named after the business.
-  const templatePath = join(process.cwd(), "../client-site");
-  const typesPath = join(process.cwd(), "../feast-works/types");
+export async function updateRepo(answers: Answers) {
+  const clientSitePath = join(process.cwd(), "../client-site");
+  const feastWorksPath = join(process.cwd(), "../feast-works");
 
-  // Copy the schema file to the client-site and feast-works directories
+  // Copy the schema files to the client-site and feast-works directories
   const schemaSpinner = ora(
     "Updating the schema and types-related files...",
   ).start();
   await fs.copy(
     join(process.cwd(), "schema.ts"),
-    join(templatePath, "schema.ts"),
+    join(clientSitePath, "schema.ts"), // Copy the schema file to the client site.
   );
-  await fs.copy(join(process.cwd(), "schema.ts"), join(typesPath, "feast.ts"));
+  await fs.copy(
+    join(process.cwd(), "schema.ts"),
+    join(feastWorksPath, "schema.ts"), // Copy the schema file to the FEAST Works site.
+  );
   await fs.copy(
     join(process.cwd(), "clerk.d.ts"),
-    join(typesPath, "clerk.d.ts"),
+    join(feastWorksPath, "clerk.d.ts"), // Copy the Clerk types file to the FEAST Works site.
   );
   schemaSpinner.succeed("✅ schema.ts successfully updated");
 
@@ -31,8 +32,16 @@ export async function updateRepo(answers: Answers, orgId: string) {
     `Updating the utils.ts file for ${answers.name}...`,
   ).start();
   const utilsContent = buildUtils();
-  await fs.writeFile(join(templatePath, "lib", "utils.ts"), utilsContent);
+  await fs.writeFile(join(clientSitePath, "lib", "utils.ts"), utilsContent);
   utilsSpinner.succeed("✅ utils.ts successfully updated");
+
+  // Copy the Blocks file from to the feast-works repo to the client-site repo
+  const blocksSpinner = ora('Updating "block" components...').start();
+  await fs.copy(
+    join(feastWorksPath, "app/admin/builder/_components", "Blocks.tsx"),
+    join(clientSitePath, "components", "Blocks.tsx"),
+  );
+  blocksSpinner.succeed("✅ Blocks.tsx successfully updated");
 }
 
 export async function addDomain(slug: string) {

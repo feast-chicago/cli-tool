@@ -18,4 +18,4 @@ console.log(chalk.bold.hex("#fd6f3b")("\nFEAST App CLI Tool\n"));
 await updateBusiness(exmampleAnswers, exampleOrgId);
 
 // 2. Update the template in its current directory.
-await updateRepo(exmampleAnswers, exampleOrgId);
+await updateRepo(exmampleAnswers);
