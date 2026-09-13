@@ -127,7 +127,13 @@ export const ClerkProvisionSchema = z.object({
 
 // ——————————————— LAYOUT COMPONENTS ———————————————
 
-const AlignmentSchema = z.enum(["left", "center", "right"]).default("left");
+const AlignmentSchema = z.enum(["left", "center", "right", "justify"]);
+
+export const BorderSchema = z.object({
+  thickness: z.number(),
+  color: z.string(),
+  style: z.enum(["Solid", "Dashed", "Dotted"]),
+});
 
 const ButtonPropsSchema = z.object({
   label: z.string().min(1),
@@ -177,6 +183,20 @@ const MapPropsSchema = z.object({
   // lat/lng pulled from business address in Supabase at runtime
 });
 
+const MarginSchema = z.object({
+  top: z.number(),
+  bottom: z.number(),
+  left: z.number(),
+  right: z.number(),
+});
+
+const PaddingSchema = z.object({
+  top: z.number(),
+  bottom: z.number(),
+  left: z.number(),
+  right: z.number(),
+});
+
 const ReviewsPropsSchema = z.object({
   heading: z.string().default("Reviews"),
   displayStyle: z.enum(["grid", "list", "carousel"]).default("grid"),
@@ -188,17 +208,12 @@ const SocialMediaHandlePropsSchema = z.object({
 });
 
 const TextPropsSchema = z.object({
-  heading: z.string().nullable(),
-  headingSize: z.enum(["h1", "h2", "h3", "h4", "h5", "h6", "p"]),
-  body: z.string().nullable(),
-  button: ButtonPropsSchema.nullable(),
-  link: LinkPropsSchema.nullable(),
-  // buttons: z.array(ButtonPropsSchema), // TODO
-  // links: z.array(LinkPropsSchema), // TODO
-  backgroundStyle: z
-    .enum(["primary", "secondary", "muted", "transparent"])
-    .default("primary"),
   alignment: AlignmentSchema,
+  backgroundColor: z.enum(["primary", "secondary", "muted", "transparent"]),
+  body: z.string(),
+  border: BorderSchema,
+  margin: MarginSchema,
+  padding: PaddingSchema,
 });
 
 export type ButtonProps = z.infer<typeof ButtonPropsSchema>;
@@ -244,13 +259,16 @@ const defaultButtonProps: ButtonProps = {
 };
 const defaultDividerProps: DividerProps = { style: "line", spacing: "md" };
 const defaultHeaderProps: TextProps = {
-  heading: null,
-  headingSize: "h1",
-  body: null,
-  button: null,
-  link: null,
-  backgroundStyle: "transparent",
   alignment: "left",
+  backgroundColor: "transparent",
+  body: "Header",
+  border: {
+    thickness: 0,
+    color: "#000000",
+    style: "Solid",
+  },
+  margin: { top: 0, bottom: 0, left: 0, right: 0 },
+  padding: { top: 10, bottom: 10, left: 20, right: 20 },
 };
 const defaultHoursProps: HoursProps = {
   heading: "Hours",
@@ -278,13 +296,16 @@ const defaultSocialMediaHandleProps: SocialMediaHandleProps = {
   username: null,
 };
 const defaultTextProps: TextProps = {
-  heading: null,
-  headingSize: "p",
-  body: null,
-  button: null,
-  link: null,
-  backgroundStyle: "transparent",
   alignment: "left",
+  backgroundColor: "transparent",
+  body: "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.",
+  border: {
+    thickness: 0,
+    color: "#000000",
+    style: "Solid",
+  },
+  margin: { top: 0, bottom: 0, left: 0, right: 0 },
+  padding: { top: 10, bottom: 10, left: 20, right: 20 },
 };
 const defaultReviewsProps: ReviewsProps = {
   heading: "Reviews",
