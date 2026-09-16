@@ -211,7 +211,7 @@ const SocialMediaHandlePropsSchema = z.object({
 
 const TextPropsSchema = z.object({
   alignment: AlignmentSchema,
-  backgroundColor: z.enum(["primary", "secondary", "muted", "transparent"]),
+  backgroundColor: HexColorSchema,
   body: z.string(),
   border: BorderSchema,
   margin: MarginSchema,
@@ -262,7 +262,7 @@ const defaultButtonProps: ButtonProps = {
 const defaultDividerProps: DividerProps = { style: "line", spacing: "md" };
 const defaultHeaderProps: TextProps = {
   alignment: "left",
-  backgroundColor: "transparent",
+  backgroundColor: "",
   body: "Header",
   border: {
     thickness: 0,
@@ -299,7 +299,7 @@ const defaultSocialMediaHandleProps: SocialMediaHandleProps = {
 };
 const defaultTextProps: TextProps = {
   alignment: "left",
-  backgroundColor: "transparent",
+  backgroundColor: "",
   body: "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.",
   border: {
     thickness: 0,
