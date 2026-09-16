@@ -33,6 +33,7 @@ export async function updateRepo(answers: Answers) {
   ).start();
   const utilsContent = buildUtils();
   await fs.writeFile(join(clientSitePath, "lib", "utils.ts"), utilsContent);
+  await fs.writeFile(join(feastWorksPath, "lib", "utils.ts"), utilsContent);
   utilsSpinner.succeed("✅ utils.ts successfully updated");
 
   // Copy the Blocks file from to the feast-works repo to the client-site repo

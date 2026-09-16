@@ -62,7 +62,7 @@ function getRadius(radius: Theme["radius"]): string {
 }
 
 export function getForeground(hex: string | null): string {
-  if (!hex) return "#000000";
+  if (!hex || hex === "") return "#000000";
   const color = oklch(parse(hex));
   if (!color) throw new Error(`Invalid hex: ${hex}`);
   // return color.l > 0.6 ? "0.205 0 0" : "0.985 0 0"; // oklch
