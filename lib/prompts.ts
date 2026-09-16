@@ -3,6 +3,7 @@ import { exmampleAnswers, InterFont } from "../exampleData";
 import { Address, AnswersSchema, Settings, Theme } from "../schema";
 import { createSlug } from "../utils/slug";
 import { fetchGoogleFonts } from "./fonts";
+import { getForeground } from "./theme";
 
 const states = new Map([
   ["Alabama", "AL"],
@@ -631,7 +632,7 @@ export async function gatherAnswers() {
   } = exmampleAnswers;
   const { street_number, street_name, city, zip_code, country } =
     business_address[0];
-  const { primary_brand_color, secondary_brand_color } = theme;
+  const { primary_color, secondary_color } = theme;
   const { first_name, last_name } = admin;
 
   const businessIdentityAnswers = (await prompt([
@@ -810,8 +811,8 @@ export async function gatherAnswers() {
 
   type ThemeAnswers = {
     platform_theme: typeof theme.platform_theme;
-    primary_brand_color: typeof theme.primary_brand_color;
-    secondary_brand_color: typeof theme.secondary_brand_color;
+    primary_color: typeof theme.primary_color;
+    secondary_color: typeof theme.secondary_color;
     primary_font: string;
     secondary_font: string;
     radius: typeof theme.radius;
@@ -838,15 +839,15 @@ export async function gatherAnswers() {
     },
     {
       type: "input",
-      name: "primary_brand_color",
+      name: "primary_color",
       message: "Primary brand color (hex)?",
-      initial: primary_brand_color,
+      initial: primary_color,
     },
     {
       type: "input",
-      name: "secondary_brand_color",
+      name: "secondary_color",
       message: "Secondary brand color (hex)?",
-      initial: secondary_brand_color,
+      initial: secondary_color,
     },
     {
       type: "autocomplete",
@@ -880,8 +881,12 @@ export async function gatherAnswers() {
     platform_theme: themeAnswers.platform_theme,
     primary_logo_url: null,
     secondary_logo_url: null,
-    primary_brand_color: themeAnswers.primary_brand_color,
-    secondary_brand_color: themeAnswers.secondary_brand_color,
+    primary_color: themeAnswers.primary_color,
+    primary_color_foreground: getForeground(themeAnswers.primary_color),
+    secondary_color: themeAnswers.secondary_color,
+    secondary_color_foreground: themeAnswers.secondary_color
+      ? getForeground(themeAnswers.secondary_color)
+      : null,
     primary_font: JSON.parse(
       fontMap.get(themeAnswers.primary_font) ?? JSON.stringify(InterFont),
     ),

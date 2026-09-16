@@ -37,37 +37,39 @@ interface ThemeVars {
   "--sidebar-ring": string;
 }
 
+function toOklchValues(hex: string): string {
+  const color = oklch(parse(hex));
+  if (!color) throw new Error(`Invalid hex: ${hex}`);
+  return `${formatNumber(color.l)} ${formatNumber(color.c)} ${formatNumber(color.h ?? 0)}`;
+}
+
+function getRadius(radius: Theme["radius"]): string {
+  const defaultRem = "0.625rem";
+  switch (radius) {
+    case "None":
+      return "0rem";
+    case "Small":
+      return "0.45rem";
+    case "Default":
+      return defaultRem;
+    case "Medium":
+      return defaultRem;
+    case "Large":
+      return "0.875rem";
+    default:
+      return defaultRem;
+  }
+}
+
+export function getForeground(hex: string | null): string {
+  if (!hex) return "#000000";
+  const color = oklch(parse(hex));
+  if (!color) throw new Error(`Invalid hex: ${hex}`);
+  // return color.l > 0.6 ? "0.205 0 0" : "0.985 0 0"; // oklch
+  return color.l > 0.6 ? "#171717" : "#fafafa"; // Hex
+}
+
 export function createTheme(theme: Theme) {
-  function toOklchValues(hex: string): string {
-    const color = oklch(parse(hex));
-    if (!color) throw new Error(`Invalid hex: ${hex}`);
-    return `${formatNumber(color.l)} ${formatNumber(color.c)} ${formatNumber(color.h ?? 0)}`;
-  }
-
-  function getForeground(hex: string): string {
-    const color = oklch(parse(hex));
-    if (!color) throw new Error(`Invalid hex: ${hex}`);
-    return color.l > 0.6 ? "0.205 0 0" : "0.985 0 0";
-  }
-
-  function getRadius(radius: Theme["radius"]): string {
-    const defaultRem = "0.625rem";
-    switch (radius) {
-      case "None":
-        return "0rem";
-      case "Small":
-        return "0.45rem";
-      case "Default":
-        return defaultRem;
-      case "Medium":
-        return defaultRem;
-      case "Large":
-        return "0.875rem";
-      default:
-        return defaultRem;
-    }
-  }
-
   // Keep arguments as Hex code values for when users are able to choose these values.
   const lightBase = toOklchValues("#ffffff"); // oklch(1 0 0)
   const lightBaseFg = toOklchValues("#0a0a0a"); // oklch(0.145 0 0)
@@ -76,26 +78,26 @@ export function createTheme(theme: Theme) {
   const darkBaseFg = toOklchValues("#fafafa"); // oklch(0.985 0 0)
   const darkCardAndPopover = toOklchValues("#171717"); // oklch(0.205 0 0)
 
-  const primary = toOklchValues(theme.primary_brand_color);
-  const primaryFg = getForeground(theme.primary_brand_color);
+  const primary = toOklchValues(theme.primary_color);
+  const primaryFg = getForeground(theme.primary_color);
 
   const secondary = (isDark: boolean) =>
-    theme.secondary_brand_color
-      ? theme.secondary_brand_color.toLowerCase() === "#f5f5f5"
+    theme.secondary_color
+      ? theme.secondary_color.toLowerCase() === "#f5f5f5"
         ? isDark
           ? "0.269 0 0"
           : "0.97 0 0"
-        : toOklchValues(theme.secondary_brand_color)
+        : toOklchValues(theme.secondary_color)
       : isDark
         ? "0.269 0 0"
         : "0.97 0 0";
   const secondaryFg = (isDark: boolean) =>
-    theme.secondary_brand_color
-      ? theme.secondary_brand_color.toLowerCase() === "#f5f5f5"
+    theme.secondary_color
+      ? theme.secondary_color.toLowerCase() === "#f5f5f5"
         ? isDark
           ? "0.985 0 0"
           : "0.205 0 0"
-        : getForeground(theme.secondary_brand_color)
+        : getForeground(theme.secondary_color)
       : isDark
         ? "0.985 0 0"
         : "0.205 0 0";
@@ -116,7 +118,7 @@ export function createTheme(theme: Theme) {
 
   // Chart colors — 5 tints derived from primary
   // TODO: Use uicolors.app to help create logic to make 5 tints.
-  const primaryColor = oklch(parse(theme.primary_brand_color))!;
+  const primaryColor = oklch(parse(theme.primary_color))!;
   const chartColors = [0.87, 0.556, 0.439, 0.371, 0.269].map(
     (l) =>
       `oklch(${formatNumber(l)} ${formatNumber(Math.min(primaryColor.c * 0.6, 0.12))} ${formatNumber(primaryColor.h ?? 0)})`,

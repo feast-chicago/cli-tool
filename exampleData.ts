@@ -1,3 +1,4 @@
+import { getForeground } from "./lib/theme";
 import { Address, Admin, Answers, GoogleFont, Settings, Theme } from "./schema";
 
 export const InterFont: GoogleFont = {
@@ -90,12 +91,16 @@ const business_address: Address[] = [
 ];
 const billing_address = business_address[0];
 
+const [primary_color, secondary_color] = ["#b5451b", "#f5f5f5"]; // Primary color is "Terracotta"
+
 const theme: Theme = {
   platform_theme: "basic",
   primary_logo_url: null,
   secondary_logo_url: null,
-  primary_brand_color: "#b5451b", // Terracotta
-  secondary_brand_color: "#f5f5f5", // Dark: #262626
+  primary_color,
+  primary_color_foreground: getForeground(primary_color),
+  secondary_color,
+  secondary_color_foreground: getForeground(secondary_color),
   primary_font: InterFont,
   secondary_font: InterFont,
   letter_spacing: 0,
