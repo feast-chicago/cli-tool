@@ -132,7 +132,7 @@ export const ClerkProvisionSchema = z.object({
 const AlignmentSchema = z.enum(["left", "center", "right", "justify"]);
 
 export const BorderSchema = z.object({
-  thickness: z.number(),
+  width: z.number(),
   color: z.string(),
   style: z.enum(["Solid", "Dashed", "Dotted"]),
 });
@@ -265,7 +265,7 @@ const defaultHeaderProps: TextProps = {
   backgroundColor: "",
   body: "Header",
   border: {
-    thickness: 0,
+    width: 0,
     color: "#000000",
     style: "Solid",
   },
@@ -302,7 +302,7 @@ const defaultTextProps: TextProps = {
   backgroundColor: "",
   body: "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.",
   border: {
-    thickness: 0,
+    width: 0,
     color: "#000000",
     style: "Solid",
   },
