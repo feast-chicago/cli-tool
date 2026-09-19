@@ -31,9 +31,16 @@ export async function updateRepo(answers: Answers) {
   const utilsSpinner = ora(
     `Updating the utils.ts file for ${answers.name}...`,
   ).start();
-  const utilsContent = buildUtils();
-  await fs.writeFile(join(clientSitePath, "lib", "utils.ts"), utilsContent);
-  await fs.writeFile(join(feastWorksPath, "lib", "utils.ts"), utilsContent);
+  const clientSiteUtilsContent = buildUtils(false);
+  const feastWorksUtilsContent = buildUtils(true);
+  await fs.writeFile(
+    join(clientSitePath, "lib", "utils.ts"),
+    clientSiteUtilsContent,
+  );
+  await fs.writeFile(
+    join(feastWorksPath, "lib", "utils.ts"),
+    feastWorksUtilsContent,
+  );
   utilsSpinner.succeed("✅ utils.ts successfully updated");
 
   // Copy the Blocks file from to the feast-works repo to the client-site repo

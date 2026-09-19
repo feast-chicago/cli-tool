@@ -13,7 +13,7 @@ function getFileContentsWithoutImports(filePath: string): string {
   return fileContent.replace(importRegex, "").trimStart();
 }
 
-export function buildUtils(): string {
+export function buildUtils(allowEditing: boolean): string {
   const formatNumberText = getFileContentsWithoutImports(
     join(process.cwd(), "utils", "math.ts"),
   );
@@ -31,6 +31,9 @@ export function buildUtils(): string {
     `export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }`,
+    "",
+    `export const IS_INLINE_EDITING_ALLOWED = ${allowEditing};`,
+    "",
     formatNumberText,
     codeText,
   ]
