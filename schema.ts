@@ -130,6 +130,9 @@ export const ClerkProvisionSchema = z.object({
 // ——————————————— LAYOUT COMPONENTS ———————————————
 
 const AlignmentSchema = z.enum(["left", "center", "right", "justify"]);
+const FormatSchema = z.array(
+  z.enum(["bold", "italic", "underline", "strikethrough"]),
+);
 
 export const BorderSchema = z.object({
   width: z.number(),
@@ -214,6 +217,8 @@ const TextPropsSchema = z.object({
   backgroundColor: HexColorSchema,
   body: z.string(),
   border: BorderSchema,
+  color: HexColorSchema,
+  format: FormatSchema,
   margin: MarginSchema,
   padding: PaddingSchema,
 });
@@ -269,6 +274,8 @@ const defaultHeaderProps: TextProps = {
     color: "#000000",
     style: "Solid",
   },
+  color: "#000000",
+  format: [],
   margin: { top: 0, bottom: 0, left: 0, right: 0 },
   padding: { top: 10, bottom: 10, left: 20, right: 20 },
 };
@@ -306,6 +313,8 @@ const defaultTextProps: TextProps = {
     color: "#000000",
     style: "Solid",
   },
+  color: "#000000",
+  format: [],
   margin: { top: 0, bottom: 0, left: 0, right: 0 },
   padding: { top: 10, bottom: 10, left: 20, right: 20 },
 };
