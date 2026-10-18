@@ -14,8 +14,12 @@ function getFileContentsWithoutImports(filePath: string): string {
 }
 
 export function buildUtils(allowEditing: boolean): string {
-  const formatNumberText = getFileContentsWithoutImports(
+  const numberFormattingText = getFileContentsWithoutImports(
     join(process.cwd(), "utils", "math.ts"),
+  );
+
+  const textFormattingText = getFileContentsWithoutImports(
+    join(process.cwd(), "utils", "text.ts"),
   );
 
   const codeText = getFileContentsWithoutImports(
@@ -34,7 +38,8 @@ export function buildUtils(allowEditing: boolean): string {
     "",
     `export const IS_INLINE_EDITING_ALLOWED = ${allowEditing};`,
     "",
-    formatNumberText,
+    numberFormattingText,
+    textFormattingText,
     codeText,
   ]
     .join("\n")

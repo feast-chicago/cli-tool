@@ -129,25 +129,50 @@ export const ClerkProvisionSchema = z.object({
 
 // ——————————————— LAYOUT COMPONENTS ———————————————
 
-const AlignmentSchema = z.enum(["left", "center", "right", "justify"]);
-const FormatSchema = z.array(
-  z.enum(["bold", "italic", "underline", "strikethrough"]),
-);
-
+export const AlignmentSchema = z.enum(["left", "center", "right", "justify"]);
 export const BorderSchema = z.object({
   width: z.number(),
   color: z.string(),
   style: z.enum(["Solid", "Dashed", "Dotted"]),
 });
+export const FormatSchema = z.array(
+  z.enum(["bold", "italic", "underline", "strikethrough"]),
+);
+const MarginSchema = z.object({
+  top: z.number(),
+  bottom: z.number(),
+  left: z.number(),
+  right: z.number(),
+});
+const PaddingSchema = z.object({
+  top: z.number(),
+  bottom: z.number(),
+  left: z.number(),
+  right: z.number(),
+});
 
-const ButtonPropsSchema = z.object({
-  label: z.string().min(1),
+const BasicPropsSchema = z.object({
+  alignment: AlignmentSchema,
+  backgroundColor: HexColorSchema,
+  border: BorderSchema,
+  margin: MarginSchema,
+  padding: PaddingSchema,
+});
+
+const ButtonPropsSchema = BasicPropsSchema.extend({
+  color: HexColorSchema,
+  format: FormatSchema,
+  label: z.string(),
   href: z.string().nullable(),
-  openInNewTab: z.boolean().default(true).nullable(),
-  action: z.function().nullable(),
-  variant: z
-    .enum(["default", "outline", "secondary", "ghost", "destructive", "link"])
-    .default("default"),
+  openInNewTab: z.boolean(),
+  variant: z.enum([
+    "default",
+    "outline",
+    "secondary",
+    "ghost",
+    "destructive",
+    "link",
+  ]),
 });
 
 const DividerPropsSchema = z.object({
@@ -188,20 +213,6 @@ const MapPropsSchema = z.object({
   // lat/lng pulled from business address in Supabase at runtime
 });
 
-const MarginSchema = z.object({
-  top: z.number(),
-  bottom: z.number(),
-  left: z.number(),
-  right: z.number(),
-});
-
-const PaddingSchema = z.object({
-  top: z.number(),
-  bottom: z.number(),
-  left: z.number(),
-  right: z.number(),
-});
-
 const ReviewsPropsSchema = z.object({
   heading: z.string().default("Reviews"),
   displayStyle: z.enum(["grid", "list", "carousel"]).default("grid"),
@@ -212,15 +223,10 @@ const SocialMediaHandlePropsSchema = z.object({
   username: z.string().nullable(),
 });
 
-const TextPropsSchema = z.object({
-  alignment: AlignmentSchema,
-  backgroundColor: HexColorSchema,
+const TextPropsSchema = BasicPropsSchema.extend({
   body: z.string(),
-  border: BorderSchema,
   color: HexColorSchema,
   format: FormatSchema,
-  margin: MarginSchema,
-  padding: PaddingSchema,
 });
 
 export type ButtonProps = z.infer<typeof ButtonPropsSchema>;
@@ -258,10 +264,16 @@ export const PageComponentSchema = z.object({
 });
 // Default props for each component type, used when adding a new component.
 const defaultButtonProps: ButtonProps = {
+  alignment: "center",
+  backgroundColor: "",
+  border: { width: 0, color: "#000000", style: "Solid" },
+  margin: { top: 0, bottom: 0, left: 0, right: 0 },
+  padding: { top: 10, bottom: 10, left: 20, right: 20 },
+  color: "#ffffff",
+  format: [],
   label: "Button",
   href: null,
-  openInNewTab: null,
-  action: null,
+  openInNewTab: false,
   variant: "default",
 };
 const defaultDividerProps: DividerProps = { style: "line", spacing: "md" };
