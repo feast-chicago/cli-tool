@@ -151,7 +151,7 @@ const PaddingSchema = z.object({
   right: z.number(),
 });
 
-const BasicPropsSchema = z.object({
+const BasePropsSchema = z.object({
   alignment: AlignmentSchema,
   backgroundColor: HexColorSchema,
   border: BorderSchema,
@@ -159,7 +159,7 @@ const BasicPropsSchema = z.object({
   padding: PaddingSchema,
 });
 
-const ButtonPropsSchema = BasicPropsSchema.extend({
+const ButtonPropsSchema = BasePropsSchema.extend({
   color: HexColorSchema,
   format: FormatSchema,
   label: z.string(),
@@ -223,12 +223,13 @@ const SocialMediaHandlePropsSchema = z.object({
   username: z.string().nullable(),
 });
 
-const TextPropsSchema = BasicPropsSchema.extend({
+const TextPropsSchema = BasePropsSchema.extend({
   body: z.string(),
   color: HexColorSchema,
   format: FormatSchema,
 });
 
+export type BaseProps = z.infer<typeof BasePropsSchema>;
 export type ButtonProps = z.infer<typeof ButtonPropsSchema>;
 export type DividerProps = z.infer<typeof DividerPropsSchema>;
 export type HoursProps = z.infer<typeof HoursPropsSchema>;
