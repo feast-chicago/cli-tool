@@ -188,12 +188,15 @@ const HoursPropsSchema = z.object({
   layout: z.enum(["vertical", "horizontal"]).default("vertical"),
 });
 
-const ImagePropsSchema = z.object({
-  url: z.url().nullable(),
+const ImagePropsSchema = BasePropsSchema.extend({
   alt: z.string().default(""),
-  fit: z.enum(["cover", "contain"]).default("cover"),
+  size: z.number(),
+  isFullWidthOnMobile: z.boolean(),
+  imageUrl: z.url().nullable(),
+  externalUrl: z.url().nullable(),
+  fit: z.enum(["cover", "contain"]),
   caption: z.string().nullable(),
-  maxWidth: z.enum(["sm", "md", "lg", "full"]).default("full"),
+  showCaption: z.boolean(),
 });
 
 const LinkPropsSchema = z.object({
@@ -229,19 +232,23 @@ const TextPropsSchema = BasePropsSchema.extend({
   format: FormatSchema,
 });
 
+export type AlignmentProps = z.infer<typeof AlignmentSchema>;
 export type BaseProps = z.infer<typeof BasePropsSchema>;
+export type BorderProps = z.infer<typeof BorderSchema>;
 export type ButtonProps = z.infer<typeof ButtonPropsSchema>;
 export type DividerProps = z.infer<typeof DividerPropsSchema>;
+export type FormatProps = z.infer<typeof FormatSchema>;
 export type HoursProps = z.infer<typeof HoursPropsSchema>;
 export type ImageProps = z.infer<typeof ImagePropsSchema>;
 export type LinkProps = z.infer<typeof LinkPropsSchema>;
 export type LogoProps = z.infer<typeof LogoPropsSchema>;
 export type MapProps = z.infer<typeof MapPropsSchema>;
+export type ReviewsProps = z.infer<typeof ReviewsPropsSchema>;
 export type SocialMediaHandleProps = z.infer<
   typeof SocialMediaHandlePropsSchema
 >;
+export type SpacingProps = z.infer<typeof MarginSchema>; // PaddingSchema could also be used.
 export type TextProps = z.infer<typeof TextPropsSchema>;
-export type ReviewsProps = z.infer<typeof ReviewsPropsSchema>;
 
 // ——————————————————————————————————————————————————
 
@@ -282,11 +289,7 @@ const defaultHeaderProps: TextProps = {
   alignment: "left",
   backgroundColor: "",
   body: "Header",
-  border: {
-    width: 0,
-    color: "#000000",
-    style: "Solid",
-  },
+  border: { width: 0, color: "#000000", style: "Solid" },
   color: "#000000",
   format: [],
   margin: { top: 0, bottom: 0, left: 0, right: 0 },
@@ -300,11 +303,21 @@ const defaultHoursProps: HoursProps = {
   layout: "vertical",
 };
 const defaultImageProps: ImageProps = {
-  url: null,
+  // Base props
+  alignment: "center",
+  backgroundColor: "",
+  border: { width: 0, color: "#000000", style: "Solid" },
+  margin: { top: 0, bottom: 0, left: 0, right: 0 },
+  padding: { top: 10, bottom: 10, left: 20, right: 20 },
+  // End of base props
   alt: "Image",
+  size: 20,
+  isFullWidthOnMobile: false,
+  imageUrl: null,
+  externalUrl: null,
   fit: "contain",
   caption: null,
-  maxWidth: "full",
+  showCaption: false,
 };
 const defaultLinkProps: LinkProps = {
   label: "Link",
@@ -318,18 +331,16 @@ const defaultSocialMediaHandleProps: SocialMediaHandleProps = {
   username: null,
 };
 const defaultTextProps: TextProps = {
-  alignment: "left",
+  // Base props
+  alignment: "center",
   backgroundColor: "",
-  body: "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.",
-  border: {
-    width: 0,
-    color: "#000000",
-    style: "Solid",
-  },
-  color: "#000000",
-  format: [],
+  border: { width: 0, color: "#000000", style: "Solid" },
   margin: { top: 0, bottom: 0, left: 0, right: 0 },
   padding: { top: 10, bottom: 10, left: 20, right: 20 },
+  // End of base props
+  body: "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.",
+  color: "#000000",
+  format: [],
 };
 const defaultReviewsProps: ReviewsProps = {
   heading: "Reviews",
