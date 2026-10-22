@@ -138,6 +138,19 @@ export const BorderSchema = z.object({
 export const FormatSchema = z.array(
   z.enum(["bold", "italic", "underline", "strikethrough"]),
 );
+const LinkTypeSchema = z.enum([
+  "site_page",
+  "external_link",
+  "email",
+  "phone",
+  "document",
+]);
+const LinkSchema = z
+  .object({
+    type: LinkTypeSchema,
+    value: z.string().nullable(),
+  })
+  .nullable();
 const MarginSchema = z.object({
   top: z.number(),
   bottom: z.number(),
@@ -174,12 +187,10 @@ const ButtonPropsSchema = BasePropsSchema.extend({
     "link",
   ]),
 });
-
 const DividerPropsSchema = z.object({
   style: z.enum(["line", "dots", "blank"]).default("line"),
   spacing: z.enum(["sm", "md", "lg"]).default("md"),
 });
-
 const HoursPropsSchema = z.object({
   heading: z.string().default("Hours"),
   showMap: z.boolean().default(true),
@@ -187,45 +198,33 @@ const HoursPropsSchema = z.object({
   showEmail: z.boolean().default(false),
   layout: z.enum(["vertical", "horizontal"]).default("vertical"),
 });
-
 const ImagePropsSchema = BasePropsSchema.extend({
   alt: z.string().default(""),
   size: z.number(),
   isFullWidthOnMobile: z.boolean(),
   imageUrl: z.url().nullable(),
-  externalUrl: z.url().nullable(),
+  link: LinkSchema,
   fit: z.enum(["cover", "contain"]),
   caption: z.string().nullable(),
   showCaption: z.boolean(),
 });
-
-const LinkPropsSchema = z.object({
-  label: z.string().min(1),
-  href: z.string().min(1),
-  openInNewTab: z.boolean().default(false),
-});
-
 const LogoPropsSchema = z.object({
   type: z.enum(["square", "header"]),
   maxWidth: z.enum(["sm", "md", "lg", "full"]).default("full"),
 });
-
 const MapPropsSchema = z.object({
   heading: z.string().default("Find us"),
   height: z.enum(["sm", "md", "lg"]).default("md"),
   // lat/lng pulled from business address in Supabase at runtime
 });
-
 const ReviewsPropsSchema = z.object({
   heading: z.string().default("Reviews"),
   displayStyle: z.enum(["grid", "list", "carousel"]).default("grid"),
 });
-
 const SocialMediaHandlePropsSchema = z.object({
   platform: z.enum(["Facebook", "Google", "Instagram", "X", "Yelp"]).nullable(),
   username: z.string().nullable(),
 });
-
 const TextPropsSchema = BasePropsSchema.extend({
   body: z.string(),
   color: HexColorSchema,
@@ -240,7 +239,8 @@ export type DividerProps = z.infer<typeof DividerPropsSchema>;
 export type FormatProps = z.infer<typeof FormatSchema>;
 export type HoursProps = z.infer<typeof HoursPropsSchema>;
 export type ImageProps = z.infer<typeof ImagePropsSchema>;
-export type LinkProps = z.infer<typeof LinkPropsSchema>;
+export type LinkTypeProps = z.infer<typeof LinkTypeSchema>;
+export type LinkProps = z.infer<typeof LinkSchema>;
 export type LogoProps = z.infer<typeof LogoPropsSchema>;
 export type MapProps = z.infer<typeof MapPropsSchema>;
 export type ReviewsProps = z.infer<typeof ReviewsPropsSchema>;
@@ -260,7 +260,6 @@ export const PageComponentSchema = z.object({
     "header",
     "hours",
     "image",
-    "link",
     "logo",
     "map",
     "reviews",
@@ -314,15 +313,10 @@ const defaultImageProps: ImageProps = {
   size: 20,
   isFullWidthOnMobile: false,
   imageUrl: null,
-  externalUrl: null,
+  link: null,
   fit: "contain",
   caption: null,
   showCaption: false,
-};
-const defaultLinkProps: LinkProps = {
-  label: "Link",
-  href: "/",
-  openInNewTab: false,
 };
 const defaultLogoProps: LogoProps = { type: "square", maxWidth: "md" };
 const defaultMapProps: MapProps = { heading: "Our Location", height: "md" };
@@ -353,7 +347,6 @@ export const DEFAULT_PROPS: Record<PageComponent["type"], unknown> = {
   header: defaultHeaderProps,
   hours: defaultHoursProps,
   image: defaultImageProps,
-  link: defaultLinkProps,
   logo: defaultLogoProps,
   map: defaultMapProps,
   reviews: defaultReviewsProps,
