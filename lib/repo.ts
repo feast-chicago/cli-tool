@@ -50,6 +50,78 @@ export async function updateRepo(answers: Answers) {
     join(clientSitePath, "components", "Blocks.tsx"),
   );
   blocksSpinner.succeed("✅ Blocks.tsx successfully updated");
+
+  // Generate ComponentRenderer.tsx from BLOCK_MAP
+  const rendererSpinner = ora("Updating ComponentRenderer.tsx...").start();
+  try {
+    // read the copied Blocks.tsx to extract exported block names
+    const blocksContent = await fs.readFile(
+      join(clientSitePath, "components", "Blocks.tsx"),
+      "utf8",
+    );
+
+    // Extract BLOCK_MAP
+    const blockMapMatch = blocksContent.match(
+      /export const BLOCK_MAP[^{]*{([^}]*)}/s,
+    );
+
+    if (!blockMapMatch) throw new Error("BLOCK_MAP not found in Blocks.tsx");
+
+    // Parse out "key: ComponentName" pairs
+    const entries = [...blockMapMatch[1].matchAll(/(\w+):\s*(\w+)/g)];
+
+    if (entries.length === 0) throw new Error("No entries found in BLOCK_MAP");
+
+    const blockNames = entries.map(([, , name]) => name);
+    const blockKeys = entries.map(([, key]) => key);
+
+    const rendererContent = `import { Business, PageComponent } from "@/schema";
+import { ${blockNames.join(", ")} } from "./Blocks";
+
+const SECTION_MAP: Partial<
+  Record<PageComponent["type"], React.ComponentType<any>>
+> = {
+  ${entries.map((entry) => `${entry[0]},`).join("\n  ")}
+};
+
+export function ComponentRenderer({
+  layout,
+  business,
+}: {
+  layout: PageComponent[];
+  business: Business;
+}) {
+  return (
+    <>
+      {layout.map((component) => {
+        const Section = SECTION_MAP[component.type];
+        if (!Section) return null;
+        return (
+          <Section
+            key={component.id}
+            props={component.props}
+            business={business}
+          />
+        );
+      })}
+    </>
+  );
+}
+`;
+
+    await fs.writeFile(
+      join(clientSitePath, "components", "ComponentRenderer.tsx"),
+      rendererContent,
+      "utf8",
+    );
+
+    rendererSpinner.succeed(
+      `✅ ComponentRenderer.tsx sucessfully updated with ${entries.length} block${entries.length !== 1 ? "s" : ""} — ${blockKeys.join(", ")}`,
+    );
+  } catch (err) {
+    rendererSpinner.fail("❌ Failed to generate ComponentRenderer.tsx");
+    throw err;
+  }
 }
 
 export async function addDomain(slug: string) {
