@@ -138,6 +138,7 @@ export const BorderSchema = z.object({
 export const FormatSchema = z.array(
   z.enum(["bold", "italic", "underline", "strikethrough"]),
 );
+export const HeadingLevelSchema = z.enum(["h1", "h2", "h3", "h4", "h5", "h6"]);
 const LinkTypeSchema = z.enum([
   "site_page",
   "external_link",
@@ -230,6 +231,9 @@ const TextPropsSchema = BasePropsSchema.extend({
   color: HexColorSchema,
   format: FormatSchema,
 });
+const HeaderPropsSchema = TextPropsSchema.extend({
+  level: HeadingLevelSchema,
+});
 
 export type AlignmentProps = z.infer<typeof AlignmentSchema>;
 export type BaseProps = z.infer<typeof BasePropsSchema>;
@@ -237,6 +241,7 @@ export type BorderProps = z.infer<typeof BorderSchema>;
 export type ButtonProps = z.infer<typeof ButtonPropsSchema>;
 export type DividerProps = z.infer<typeof DividerPropsSchema>;
 export type FormatProps = z.infer<typeof FormatSchema>;
+export type HeaderProps = z.infer<typeof HeaderPropsSchema>;
 export type HoursProps = z.infer<typeof HoursPropsSchema>;
 export type ImageProps = z.infer<typeof ImagePropsSchema>;
 export type LinkTypeProps = z.infer<typeof LinkTypeSchema>;
