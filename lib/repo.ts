@@ -85,11 +85,11 @@ const SECTION_MAP: Partial<
 };
 
 export function ComponentRenderer({
-  layout,
   business,
+  layout,
 }: {
-  layout: PageComponent[];
   business: Business;
+  layout: PageComponent[];
 }) {
   return (
     <>
@@ -101,6 +101,7 @@ export function ComponentRenderer({
             key={component.id}
             props={component.props}
             business={business}
+            theme={business.theme}
           />
         );
       })}

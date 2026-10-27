@@ -173,12 +173,13 @@ const BasePropsSchema = z.object({
   padding: PaddingSchema,
 });
 
-const ButtonPropsSchema = BasePropsSchema.extend({
-  color: HexColorSchema,
+export const ButtonPropsSchema = BasePropsSchema.extend({
+  // color: HexColorSchema,
   format: FormatSchema,
+  isFullWidth: z.boolean(),
   label: z.string(),
-  href: z.string().nullable(),
-  openInNewTab: z.boolean(),
+  link: LinkSchema,
+  size: z.enum(["default", "extra small", "small", "large"]),
   variant: z.enum([
     "default",
     "outline",
@@ -189,6 +190,7 @@ const ButtonPropsSchema = BasePropsSchema.extend({
   ]),
 });
 const DividerPropsSchema = z.object({
+  size: z.number(),
   style: z.enum(["line", "dots", "blank"]).default("line"),
   spacing: z.enum(["sm", "md", "lg"]).default("md"),
 });
@@ -281,14 +283,19 @@ const defaultButtonProps: ButtonProps = {
   border: { width: 0, color: "#000000", style: "Solid" },
   margin: { top: 0, bottom: 0, left: 0, right: 0 },
   padding: { top: 10, bottom: 10, left: 20, right: 20 },
-  color: "#ffffff",
+  // color: "#ffffff",
   format: [],
+  isFullWidth: false,
   label: "Button",
-  href: null,
-  openInNewTab: false,
+  link: null,
+  size: "default",
   variant: "default",
 };
-const defaultDividerProps: DividerProps = { style: "line", spacing: "md" };
+const defaultDividerProps: DividerProps = {
+  size: 1,
+  style: "line",
+  spacing: "md",
+};
 const defaultHeaderProps: TextProps = {
   alignment: "left",
   backgroundColor: "",
