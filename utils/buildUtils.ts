@@ -27,7 +27,7 @@ export function buildUtils(allowEditing: boolean): string {
   );
 
   return `${[
-    'import { Theme } from "@/schema";',
+    'import { SOCIAL_PLATFORMS, SocialPlatform, Theme } from "@/schema";',
     'import { clsx, type ClassValue } from "clsx";',
     'import { oklch, parse } from "culori";',
     'import { twMerge } from "tailwind-merge";',

@@ -1,3 +1,15 @@
+import { IconType } from "react-icons";
+import {
+  FaFacebook,
+  FaInstagram,
+  FaLinkedin,
+  FaThreads,
+  FaTiktok,
+  FaWhatsapp,
+  FaXTwitter,
+  FaYelp,
+  FaYoutube,
+} from "react-icons/fa6";
 import z from "zod";
 
 const AddressSchema = z.object({
@@ -127,17 +139,13 @@ export const ClerkProvisionSchema = z.object({
   businesses: z.array(z.string()).min(1),
 });
 
-// ——————————————— LAYOUT COMPONENTS ———————————————
-
+// COMPONENT SCHEMAS
 export const AlignmentSchema = z.enum(["left", "center", "right", "justify"]);
 export const BorderSchema = z.object({
-  width: z.number(),
+  width: z.number().int(),
   color: z.string(),
   style: z.enum(["Solid", "Dashed", "Dotted"]),
 });
-export const FormatSchema = z.array(
-  z.enum(["bold", "italic", "underline", "strikethrough"]),
-);
 export const HeadingLevelSchema = z.enum(["h1", "h2", "h3", "h4", "h5", "h6"]);
 const LinkTypeSchema = z.enum([
   "site_page",
@@ -164,6 +172,18 @@ const PaddingSchema = z.object({
   left: z.number(),
   right: z.number(),
 });
+const SizeSchema = z.enum(["default", "extra small", "small", "large"]);
+export const TextFormatSchema = z.array(
+  z.enum(["bold", "italic", "underline", "strikethrough"]),
+);
+const VariantSchema = z.enum([
+  "default",
+  "outline",
+  "secondary",
+  "ghost",
+  "destructive",
+  "link",
+]);
 
 const BasePropsSchema = z.object({
   alignment: AlignmentSchema,
@@ -172,36 +192,21 @@ const BasePropsSchema = z.object({
   margin: MarginSchema,
   padding: PaddingSchema,
 });
-
-export const ButtonPropsSchema = BasePropsSchema.extend({
+export const ButtonSchema = BasePropsSchema.extend({
   // color: HexColorSchema,
-  format: FormatSchema,
+  textFormat: TextFormatSchema,
   isFullWidth: z.boolean(),
   label: z.string(),
   link: LinkSchema,
-  size: z.enum(["default", "extra small", "small", "large"]),
-  variant: z.enum([
-    "default",
-    "outline",
-    "secondary",
-    "ghost",
-    "destructive",
-    "link",
-  ]),
+  size: SizeSchema,
+  variant: VariantSchema,
 });
-const DividerPropsSchema = z.object({
-  size: z.number(),
-  style: z.enum(["line", "dots", "blank"]).default("line"),
-  spacing: z.enum(["sm", "md", "lg"]).default("md"),
+export const DividerSchema = BasePropsSchema.extend({
+  color: HexColorSchema,
+  style: z.enum(["line", "dashed", "dotted", "double", "dots", "blank"]),
+  thickness: z.number().int(),
 });
-const HoursPropsSchema = z.object({
-  heading: z.string().default("Hours"),
-  showMap: z.boolean().default(true),
-  showPhone: z.boolean().default(true),
-  showEmail: z.boolean().default(false),
-  layout: z.enum(["vertical", "horizontal"]).default("vertical"),
-});
-const ImagePropsSchema = BasePropsSchema.extend({
+const ImageSchema = BasePropsSchema.extend({
   alt: z.string().default(""),
   size: z.number(),
   isFullWidthOnMobile: z.boolean(),
@@ -211,116 +216,99 @@ const ImagePropsSchema = BasePropsSchema.extend({
   caption: z.string().nullable(),
   showCaption: z.boolean(),
 });
-const LogoPropsSchema = z.object({
-  type: z.enum(["square", "header"]),
-  maxWidth: z.enum(["sm", "md", "lg", "full"]).default("full"),
+const MapSchema = BasePropsSchema.extend({
+  heading: z.string().nullable(),
+  addressIndex: z.number().int().min(0), // multi-unit: which address
+  zoom: z.number().int().min(1).max(21),
+  height: z.number().int().min(150).max(700),
+  mapType: z.enum(["default", "satellite"]),
+  showAddress: z.boolean(),
+  details: z.string().nullable(), // parking, drive-thru, etc.
+  showGoogleMapsButton: z.boolean(),
+  showAppleMapsButton: z.boolean(),
+  buttonVariant: VariantSchema,
 });
-const MapPropsSchema = z.object({
-  heading: z.string().default("Find us"),
-  height: z.enum(["sm", "md", "lg"]).default("md"),
-  // lat/lng pulled from business address in Supabase at runtime
+export const SocialPlatformSchema = z.enum([
+  "facebook",
+  "instagram",
+  "tiktok",
+  "x",
+  "youtube",
+  "yelp",
+  "linkedin",
+  "threads",
+  "whatsapp",
+]);
+const SocialSchema = BasePropsSchema.extend({
+  links: z.array(
+    z.object({
+      id: z.string(),
+      platform: SocialPlatformSchema,
+      value: z.string(), // Handle
+    }),
+  ),
+  display: z.enum(["icon", "text", "icon_and_text"]),
+  layout: z.enum(["row", "column"]),
+  size: SizeSchema,
+  shape: z.enum(["rounded", "pill", "square"]), // Buttons only
+  variant: VariantSchema, // Button only
+  colorMode: z.enum(["theme", "brand"]),
+  gap: z.number().int().min(0).max(50),
 });
-const ReviewsPropsSchema = z.object({
-  heading: z.string().default("Reviews"),
-  displayStyle: z.enum(["grid", "list", "carousel"]).default("grid"),
-});
-const SocialMediaHandlePropsSchema = z.object({
-  platform: z.enum(["Facebook", "Google", "Instagram", "X", "Yelp"]).nullable(),
-  username: z.string().nullable(),
-});
-const TextPropsSchema = BasePropsSchema.extend({
+const TextSchema = BasePropsSchema.extend({
   body: z.string(),
   color: HexColorSchema,
-  format: FormatSchema,
+  textFormat: TextFormatSchema,
 });
-const HeaderPropsSchema = TextPropsSchema.extend({
+const HeaderSchema = TextSchema.extend({
   level: HeadingLevelSchema,
 });
 
-export type AlignmentProps = z.infer<typeof AlignmentSchema>;
+export type Alignment = z.infer<typeof AlignmentSchema>;
 export type BaseProps = z.infer<typeof BasePropsSchema>;
-export type BorderProps = z.infer<typeof BorderSchema>;
-export type ButtonProps = z.infer<typeof ButtonPropsSchema>;
-export type DividerProps = z.infer<typeof DividerPropsSchema>;
-export type FormatProps = z.infer<typeof FormatSchema>;
-export type HeaderProps = z.infer<typeof HeaderPropsSchema>;
-export type HoursProps = z.infer<typeof HoursPropsSchema>;
-export type ImageProps = z.infer<typeof ImagePropsSchema>;
-export type LinkTypeProps = z.infer<typeof LinkTypeSchema>;
-export type LinkProps = z.infer<typeof LinkSchema>;
-export type LogoProps = z.infer<typeof LogoPropsSchema>;
-export type MapProps = z.infer<typeof MapPropsSchema>;
-export type ReviewsProps = z.infer<typeof ReviewsPropsSchema>;
-export type SocialMediaHandleProps = z.infer<
-  typeof SocialMediaHandlePropsSchema
->;
-export type SpacingProps = z.infer<typeof MarginSchema>; // PaddingSchema could also be used.
-export type TextProps = z.infer<typeof TextPropsSchema>;
+export type Border = z.infer<typeof BorderSchema>;
+export type Button = z.infer<typeof ButtonSchema>;
+export type Divider = z.infer<typeof DividerSchema>;
+export type Header = z.infer<typeof HeaderSchema>;
+export type Image = z.infer<typeof ImageSchema>;
+export type Link = z.infer<typeof LinkSchema>;
+export type LinkType = z.infer<typeof LinkTypeSchema>;
+export type Map = z.infer<typeof MapSchema>;
+export type Social = z.infer<typeof SocialSchema>;
+export type SocialPlatform = z.infer<typeof SocialPlatformSchema>;
+export type Spacing = z.infer<typeof MarginSchema>; // PaddingSchema could also be used.
+export type Text = z.infer<typeof TextSchema>;
+export type TextFormat = z.infer<typeof TextFormatSchema>;
 
-// ——————————————————————————————————————————————————
-
-export const PageComponentSchema = z.object({
-  id: z.string(),
-  type: z.enum([
-    "button",
-    "divider",
-    "header",
-    "hours",
-    "image",
-    "logo",
-    "map",
-    "reviews",
-    "social",
-    "text",
-  ]),
-  props: z.record(z.string(), z.unknown()).optional(), // Component-specific config
-  isVisible: z.boolean().default(true),
-});
-// Default props for each component type, used when adding a new component.
-const defaultButtonProps: ButtonProps = {
-  alignment: "center",
+// DEFAULT COMPONENT PROPS — Used when adding a new component
+const defaultBaseProps: BaseProps = {
+  alignment: "left",
   backgroundColor: "",
   border: { width: 0, color: "#000000", style: "Solid" },
   margin: { top: 0, bottom: 0, left: 0, right: 0 },
   padding: { top: 10, bottom: 10, left: 20, right: 20 },
+};
+const defaultButton: Button = {
+  ...defaultBaseProps,
+  alignment: "center",
   // color: "#ffffff",
-  format: [],
+  textFormat: [],
   isFullWidth: false,
   label: "Button",
   link: null,
   size: "default",
   variant: "default",
 };
-const defaultDividerProps: DividerProps = {
-  size: 1,
-  style: "line",
-  spacing: "md",
-};
-const defaultHeaderProps: TextProps = {
-  alignment: "left",
-  backgroundColor: "",
-  body: "Header",
-  border: { width: 0, color: "#000000", style: "Solid" },
-  color: "#000000",
-  format: [],
-  margin: { top: 0, bottom: 0, left: 0, right: 0 },
-  padding: { top: 10, bottom: 10, left: 20, right: 20 },
-};
-const defaultHoursProps: HoursProps = {
-  heading: "Hours",
-  showMap: false,
-  showPhone: false,
-  showEmail: false,
-  layout: "vertical",
-};
-const defaultImageProps: ImageProps = {
-  // Base props
+const defaultDivider: Divider = {
+  ...defaultBaseProps,
   alignment: "center",
-  backgroundColor: "",
-  border: { width: 0, color: "#000000", style: "Solid" },
-  margin: { top: 0, bottom: 0, left: 0, right: 0 },
-  padding: { top: 10, bottom: 10, left: 20, right: 20 },
-  // End of base props
+  color: "#000000",
+  style: "line",
+  thickness: 1,
+};
+const defaultImage: Image = {
+  ...defaultBaseProps,
+  alignment: "center",
   alt: "Image",
   size: 20,
   isFullWidthOnMobile: false,
@@ -330,42 +318,55 @@ const defaultImageProps: ImageProps = {
   caption: null,
   showCaption: false,
 };
-const defaultLogoProps: LogoProps = { type: "square", maxWidth: "md" };
-const defaultMapProps: MapProps = { heading: "Our Location", height: "md" };
-const defaultSocialMediaHandleProps: SocialMediaHandleProps = {
-  platform: null,
-  username: null,
-};
-const defaultTextProps: TextProps = {
-  // Base props
+const defaultMap: Map = {
+  ...defaultBaseProps,
   alignment: "center",
-  backgroundColor: "",
-  border: { width: 0, color: "#000000", style: "Solid" },
-  margin: { top: 0, bottom: 0, left: 0, right: 0 },
-  padding: { top: 10, bottom: 10, left: 20, right: 20 },
-  // End of base props
+  heading: "Our Location",
+  addressIndex: 0,
+  zoom: 1,
+  height: 150,
+  mapType: "default",
+  showAddress: false,
+  details: null, // parking, drive-thru, etc.
+  showGoogleMapsButton: true,
+  showAppleMapsButton: true,
+  buttonVariant: "default",
+};
+const defaultSocial: Social = {
+  ...defaultBaseProps,
+  alignment: "center",
+  links: [],
+  display: "icon",
+  layout: "row",
+  size: "default",
+  shape: "rounded",
+  variant: "default",
+  colorMode: "brand",
+  gap: 10,
+};
+const defaultText: Text = {
+  ...defaultBaseProps,
   body: "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.",
   color: "#000000",
-  format: [],
+  textFormat: [],
 };
-const defaultReviewsProps: ReviewsProps = {
-  heading: "Reviews",
-  displayStyle: "grid",
+const defaultHeaderProps: Header = {
+  ...defaultText,
+  body: "Header",
+  level: "h1",
 };
 
 export const DEFAULT_PROPS: Record<PageComponent["type"], unknown> = {
-  button: defaultButtonProps,
-  divider: defaultDividerProps,
+  button: defaultButton,
+  divider: defaultDivider,
   header: defaultHeaderProps,
-  hours: defaultHoursProps,
-  image: defaultImageProps,
-  logo: defaultLogoProps,
-  map: defaultMapProps,
-  reviews: defaultReviewsProps,
-  text: defaultTextProps,
-  social: defaultSocialMediaHandleProps,
+  image: defaultImage,
+  map: defaultMap,
+  text: defaultText,
+  social: defaultSocial,
 };
 
+// SITE AND PAGE SCHEMAS
 export const PAGE_KEYS = [
   "home",
   "about",
@@ -376,6 +377,20 @@ export const PAGE_KEYS = [
 ] as const;
 export type PageKey = (typeof PAGE_KEYS)[number];
 
+export const PageComponentSchema = z.object({
+  id: z.string(),
+  type: z.enum([
+    "button",
+    "divider",
+    "header",
+    "image",
+    "map",
+    "social",
+    "text",
+  ]),
+  props: z.record(z.string(), z.unknown()).optional(), // Component-specific config
+  isVisible: z.boolean().default(true),
+});
 export const PageLayoutSchema = z.array(PageComponentSchema);
 export const SiteLayoutSchema = z.object({
   home: PageLayoutSchema.default([]),
@@ -385,13 +400,11 @@ export const SiteLayoutSchema = z.object({
   gallery: PageLayoutSchema.default([]),
   catering: PageLayoutSchema.default([]),
 });
-
 export type PageComponent = z.infer<typeof PageComponentSchema>;
 export type PageLayout = z.infer<typeof PageLayoutSchema>;
 export type SiteLayout = z.infer<typeof SiteLayoutSchema>;
 
 export const BusinessSchema = AnswersSchema.extend({
-  // info
   id: z.string().min(1),
   created_at: z.date(),
   updated_at: z.date(),
@@ -419,7 +432,7 @@ export const BusinessSchema = AnswersSchema.extend({
   // TODO: Add more fields, including but not limited to Stripe, Apple Maps, Google, etc.
 });
 
-export const SupabaseMenuItemSchema = z.object({
+export const MenuItemSchema = z.object({
   id: z.string(),
   businessId: z.string(),
   name: z.string(),
@@ -447,7 +460,6 @@ export type Business = z.infer<typeof BusinessSchema>;
 export type BusinessMetadata = z.infer<typeof BusinessMetadataSchema>;
 export type FeastConfig = z.infer<typeof ConfigSchema>;
 export type GoogleFont = z.infer<typeof GoogleFontSchema>;
-
 export type Settings = z.infer<typeof SettingsSchema>;
 export type Theme = z.infer<typeof ThemeSchema>;
 
@@ -456,3 +468,79 @@ export interface StorageItem {
   path: string;
   fullPath: string;
 }
+
+// SOCIAL PLATFORMS
+export const SOCIAL_PLATFORMS: Record<
+  SocialPlatform,
+  {
+    label: string;
+    Icon: IconType;
+    brandColor: string;
+    baseUrl: string;
+    placeholder: string;
+  }
+> = {
+  facebook: {
+    label: "Facebook",
+    Icon: FaFacebook,
+    brandColor: "#1877F2",
+    baseUrl: "https://facebook.com/",
+    placeholder: "yourpage",
+  },
+  instagram: {
+    label: "Instagram",
+    Icon: FaInstagram,
+    brandColor: "#E4405F",
+    baseUrl: "https://instagram.com/",
+    placeholder: "@yourhandle",
+  },
+  tiktok: {
+    label: "TikTok",
+    Icon: FaTiktok,
+    brandColor: "#000000",
+    baseUrl: "https://tiktok.com/@",
+    placeholder: "@yourhandle",
+  },
+  x: {
+    label: "X",
+    Icon: FaXTwitter,
+    brandColor: "#000000",
+    baseUrl: "https://x.com/",
+    placeholder: "@yourhandle",
+  },
+  youtube: {
+    label: "YouTube",
+    Icon: FaYoutube,
+    brandColor: "#FF0000",
+    baseUrl: "https://youtube.com/@",
+    placeholder: "@yourchannel",
+  },
+  yelp: {
+    label: "Yelp",
+    Icon: FaYelp,
+    brandColor: "#D32323",
+    baseUrl: "https://yelp.com/biz/",
+    placeholder: "business-slug or full URL",
+  },
+  linkedin: {
+    label: "LinkedIn",
+    Icon: FaLinkedin,
+    brandColor: "#0A66C2",
+    baseUrl: "https://linkedin.com/company/",
+    placeholder: "company-name or full URL",
+  },
+  threads: {
+    label: "Threads",
+    Icon: FaThreads,
+    brandColor: "#000000",
+    baseUrl: "https://threads.net/@",
+    placeholder: "@yourhandle or full URL",
+  },
+  whatsapp: {
+    label: "WhatsApp",
+    Icon: FaWhatsapp,
+    brandColor: "#25D366",
+    baseUrl: "https://wa.me/",
+    placeholder: "+1 773 555 0100",
+  },
+};
