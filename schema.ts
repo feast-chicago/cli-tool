@@ -203,7 +203,7 @@ export const ButtonSchema = BasePropsSchema.extend({
 });
 export const DividerSchema = BasePropsSchema.extend({
   color: HexColorSchema,
-  style: z.enum(["line", "dashed", "dotted", "double", "dots", "blank"]),
+  style: z.enum(["solid", "dashed", "dotted", "double", "ellipsis", "blank"]),
   thickness: z.number().int(),
 });
 const ImageSchema = BasePropsSchema.extend({
@@ -303,7 +303,7 @@ const defaultDivider: Divider = {
   ...defaultBaseProps,
   alignment: "center",
   color: "#000000",
-  style: "line",
+  style: "solid",
   thickness: 1,
 };
 const defaultImage: Image = {
