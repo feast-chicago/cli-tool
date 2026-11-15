@@ -5,7 +5,6 @@ import {
   FaLinkedin,
   FaThreads,
   FaTiktok,
-  FaWhatsapp,
   FaXTwitter,
   FaYelp,
   FaYoutube,
@@ -237,22 +236,19 @@ export const SocialPlatformSchema = z.enum([
   "yelp",
   "linkedin",
   "threads",
-  "whatsapp",
 ]);
-const SocialSchema = BasePropsSchema.extend({
-  links: z.array(
-    z.object({
-      id: z.string(),
-      platform: SocialPlatformSchema,
-      value: z.string(), // Handle
-    }),
-  ),
-  display: z.enum(["icon", "text", "icon_and_text"]),
-  layout: z.enum(["row", "column"]),
+const SocialLinkSchema = z.object({
+  id: z.string(),
+  platform: SocialPlatformSchema,
+  value: z.string(), // Handle
+});
+export const SocialSchema = BasePropsSchema.extend({
+  links: z.array(SocialLinkSchema),
+  variant: z.enum(["brand", ...VariantSchema.options]),
+  display: z.enum(["icon", "text", "icon & text"]),
+  shape: z.enum(["rounded", "pill", "square"]),
   size: SizeSchema,
-  shape: z.enum(["rounded", "pill", "square"]), // Buttons only
-  variant: VariantSchema, // Button only
-  colorMode: z.enum(["theme", "brand"]),
+  layout: z.enum(["row", "column"]),
   gap: z.number().int().min(0).max(50),
 });
 const TextSchema = BasePropsSchema.extend({
@@ -275,6 +271,7 @@ export type Link = z.infer<typeof LinkSchema>;
 export type LinkType = z.infer<typeof LinkTypeSchema>;
 export type Map = z.infer<typeof MapSchema>;
 export type Social = z.infer<typeof SocialSchema>;
+export type SocialLink = z.infer<typeof SocialLinkSchema>;
 export type SocialPlatform = z.infer<typeof SocialPlatformSchema>;
 export type Spacing = z.infer<typeof MarginSchema>; // PaddingSchema could also be used.
 export type Text = z.infer<typeof TextSchema>;
@@ -336,12 +333,11 @@ const defaultSocial: Social = {
   ...defaultBaseProps,
   alignment: "center",
   links: [],
+  variant: "brand",
   display: "icon",
-  layout: "row",
+  shape: "pill",
   size: "default",
-  shape: "rounded",
-  variant: "default",
-  colorMode: "brand",
+  layout: "row",
   gap: 10,
 };
 const defaultText: Text = {
@@ -424,11 +420,6 @@ export const BusinessSchema = AnswersSchema.extend({
   // features
   // integrations
   // analyticsId: z.string().nullable(),
-  // facebookUsername: z.string().nullable(),
-  // instagramUsername: z.string().nullable(),
-  // tiktokUsername: z.string().nullable(),
-  // xUsername: z.string().nullable(),
-  // yelpUsername: z.string().nullable(),
   // TODO: Add more fields, including but not limited to Stripe, Apple Maps, Google, etc.
 });
 
@@ -535,12 +526,5 @@ export const SOCIAL_PLATFORMS: Record<
     brandColor: "#000000",
     baseUrl: "https://threads.net/@",
     placeholder: "@yourhandle or full URL",
-  },
-  whatsapp: {
-    label: "WhatsApp",
-    Icon: FaWhatsapp,
-    brandColor: "#25D366",
-    baseUrl: "https://wa.me/",
-    placeholder: "+1 773 555 0100",
   },
 };

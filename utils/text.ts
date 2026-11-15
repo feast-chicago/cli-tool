@@ -14,15 +14,9 @@ export function toProperCase(text: string) {
   return result.join(" ");
 }
 
-export function buildSocialUrl(
-  platform: SocialPlatform,
-  handle: string,
-): string {
-  const trimmedInput = handle.trim();
-  if (!trimmedInput) return "";
-  if (/^https?:\/\//i.test(trimmedInput)) return trimmedInput;
-  const { baseUrl } = SOCIAL_PLATFORMS[platform];
-  if (platform === "whatsapp")
-    return `${baseUrl}${trimmedInput.replace(/\D/g, "")}`;
-  return `${baseUrl}${trimmedInput.replace(/^@/, "")}`;
+export function buildSocialUrl(platform: SocialPlatform, raw: string): string {
+  const value = raw.trim();
+  if (!value) return "";
+  if (/^https?:\/\//i.test(value)) return value; // full URLs still pass through
+  return `${SOCIAL_PLATFORMS[platform].baseUrl}${value.replace(/^@/, "")}`;
 }
