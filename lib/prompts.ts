@@ -1048,6 +1048,10 @@ export async function gatherAnswers() {
     is_rewards_enabled: selectedSettings.includes("is_rewards_enabled"),
     is_shop_page_enabled: selectedSettings.includes("is_shop_page_enabled"),
     is_catering_enabled: selectedSettings.includes("is_catering_enabled"),
+    payment_provider: null,
+    payment_account_id: null,
+    is_payment_charges_enabled: false,
+    is_payment_details_submitted: false,
   };
 
   const slug = createSlug(businessIdentityAnswers.name);

@@ -126,6 +126,10 @@ const settings: Settings = {
   is_rewards_enabled: true,
   is_shop_page_enabled: false,
   is_catering_enabled: true,
+  payment_provider: "stripe",
+  payment_account_id: "acct_1UeONkRXwRTOkYf3",
+  is_payment_charges_enabled: true,
+  is_payment_details_submitted: true,
 };
 
 export const exampleOrgId = "org_3EUnXGKFGGqs8w2mABeVmtTPLog";

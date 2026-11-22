@@ -41,6 +41,11 @@ const SettingsSchema = z.object({
   is_rewards_enabled: z.boolean(),
   is_shop_page_enabled: z.boolean(),
   is_catering_enabled: z.boolean(),
+  // For Payment integration functionality
+  payment_provider: z.enum(["stripe", "square", "paypal"]).nullable(),
+  payment_account_id: z.string().nullable(),
+  is_payment_charges_enabled: z.boolean(),
+  is_payment_details_submitted: z.boolean(),
 });
 
 const HexColorSchema = z.string().regex(/^#[0-9A-Fa-f]{6}$/);

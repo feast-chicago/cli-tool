@@ -1,6 +1,8 @@
 import { SOCIAL_PLATFORMS, SocialPlatform } from "../schema";
 
-export function toProperCase(text: string) {
+export function toProperCase(text: string | null) {
+  if (!text) return "";
+
   const arr = text.split(" ");
   const result: string[] = [];
 
